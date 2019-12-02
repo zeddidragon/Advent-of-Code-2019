@@ -10,7 +10,7 @@ fn fuel(weight int) int {
 fn day01() {
   day(1, 1)
   f := os.read_file('input/input01') or {
-    println("input01 not found!")
+    println('input01 not found!')
     return
   }
 
