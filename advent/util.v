@@ -9,3 +9,7 @@ fn max(a int, b int) int {
   if(a > b) { return a }
   return b
 }
+
+fn arr_copy(arr []int) []int {
+  return arr.map(it)
+}
