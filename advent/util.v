@@ -1,8 +1,7 @@
 module advent
 
 fn day(d int, part int) {
-  println("Day $d - $part")
-  println("===========")
+  println("# Day $d - $part")
 }
 
 fn min(a int, b int) int {
@@ -52,6 +51,10 @@ fn (p Vec2) manhattan() int {
   return abs(p.x) + abs(p.y)
 }
 
+fn (a Vec2) manhattan_to(b Vec2) int {
+  return (a - b).manhattan()
+}
+
 fn (a Vec2) + (b Vec2) Vec2 {
   return Vec2 {a.x + b.x, a.y + b.y}
 }
@@ -71,6 +74,10 @@ struct Line2 {
 
 pub fn (l Line2) str() string {
   return '[$l.a-$l.b]'
+}
+
+fn (l Line2) manhattan() int {
+  return l.a.manhattan_to(l.b)
 }
 
 fn (l Line2) orthogonal() bool {

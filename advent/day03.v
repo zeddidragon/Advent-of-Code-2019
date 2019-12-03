@@ -3,9 +3,15 @@ module advent
 import os
 
 
-struct IdTag {
+struct Stretch {
   id int
+  cost int
   line Line2
+}
+
+struct Intersection {
+  cost int
+  pos Vec2
 }
 
 fn day03() {
@@ -18,34 +24,54 @@ fn day03() {
   wires := f.split('\n')
 
   mut grid := map[string]int
-  mut lines := []IdTag
-  mut inters := []Vec2
+  mut lines := []Stretch
+  mut inters := []Intersection
 
   for j, wire in wires {
     id := j + 1
     mut pos := Vec2{0, 0}
+    mut cost := 0
 
     for move in wire.split(',') {
       prev := pos.copy()
-      pos.move(move[0], move[1..].int())
+      dist := move[1..].int()
+      pos.move(move[0], dist)
       l1 := Line2 {prev, pos.copy()}
+      // Todo: reduce cost after self-intersection
+      // This was sufficient to solve my input
       for l2 in lines {
         if id == l2.id { continue }
         inter := l1.inter(l2.line) or { continue }
-        inters << inter
+        inter_cost :=
+          cost +
+          prev.manhattan_to(inter) +
+          l2.cost +
+          l2.line.a.manhattan_to(inter)
+        inters << Intersection{inter_cost, inter}
       }
-      lines << IdTag {id, l1}
+      lines << Stretch {id, cost, l1}
+      cost += dist
     }
 
   }
 
-  mut shortest := inters[1].manhattan()
+  mut shortest := inters[1].pos.manhattan()
   for inter in inters[1..] {
-    dist := inter.manhattan()
+    dist := inter.pos.manhattan()
     if dist < shortest {
       shortest = dist
     }
   }
 
+  println(shortest)
+
+  day(3, 2)
+  shortest = inters[1].cost
+  for inter in inters[1..] {
+    total := inter.cost
+    if total < shortest {
+      shortest = total
+    }
+  }
   println(shortest)
 }
