@@ -15,7 +15,7 @@ struct Intersection {
 }
 
 fn day03() {
-  day(3, 1)
+  println('Part 1')
   f := os.read_file('input/input03') or {
     println('input03 not found!')
     return
@@ -65,7 +65,7 @@ fn day03() {
 
   println(shortest)
 
-  day(3, 2)
+  println('Part 2')
   shortest = inters[1].cost
   for inter in inters[1..] {
     total := inter.cost

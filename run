@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 rm -f .vrepl*
-v run . -o main
+v run . -o main "$@"

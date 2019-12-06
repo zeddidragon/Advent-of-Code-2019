@@ -1,9 +1,5 @@
 module advent
 
-fn day(d int, part int) {
-  println("# Day $d - $part")
-}
-
 fn arr_copy(arr []int) []int {
   return arr.map(it)
 }

@@ -4,7 +4,7 @@ import os
 
 
 fn day05() {
-  day(5, 1)
+  println('Part 1')
   f := os.read_file('input/input05') or {
     println('input05 not found!')
     return
@@ -16,7 +16,7 @@ fn day05() {
   mut out := intcode(mut mem_clone, 1)
   println(out)
 
-  day(5, 2)
+  println('Part 2')
   mem_clone = arr_copy(mem)
   out = intcode(mut mem_clone, 5)
   println(out)

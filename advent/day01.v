@@ -8,7 +8,7 @@ fn fuel(weight int) int {
 }
 
 fn day01() {
-  day(1, 1)
+  println('Part 1')
   f := os.read_file('input/input01') or {
     println('input01 not found!')
     return
@@ -25,7 +25,7 @@ fn day01() {
   }
   println(cost)
 
-  day(1, 2)
+  println('Part 2')
   println(cost2)
 }
 

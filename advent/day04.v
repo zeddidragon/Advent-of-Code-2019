@@ -35,7 +35,7 @@ fn count(range []int, strict bool) int {
 }
 
 fn day04() {
-  day(4, 1)
+  println('Part 1')
   f := os.read_file('input/input04') or {
     println('input04 not found!')
     return
@@ -46,6 +46,6 @@ fn day04() {
 
   println(count(range, false))
 
-  day(4, 2)
+  println('Part 2')
   println(count(range, true))
 }

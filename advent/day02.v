@@ -4,7 +4,7 @@ import os
 
 
 fn day02() {
-  day(2, 1)
+  println('Part 1')
   f := os.read_file('input/input02') or {
     println('input02 not found!')
     return
@@ -20,7 +20,7 @@ fn day02() {
   v0 := mem_clone[0]
   println(mem_clone[0])
 
-  day(2, 2)
+  println('Part 2')
   for j := 0; j < 100; j++ {
     for i := 0; i < j; i++ {
       mem_clone = arr_copy(mem)
