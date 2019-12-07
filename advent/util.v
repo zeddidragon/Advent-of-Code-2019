@@ -5,5 +5,5 @@ fn arr_copy(arr []int) []int {
 }
 
 fn print_arr(arr []int) {
-  for i in arr { print(i) }
+  for i in arr { print('$i,') }
 }

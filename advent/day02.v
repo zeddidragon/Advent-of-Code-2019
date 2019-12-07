@@ -4,10 +4,7 @@ import os
 
 
 pub fn day02() {
-  f := os.read_file('input/input02') or {
-    println('input02 not found!')
-    return
-  }
+  f := os.read_file('input/input02') or { panic }
 
   code_strs := f.split(',')
   mem := code_strs.map(it.int())
@@ -16,7 +13,6 @@ pub fn day02() {
   mem_clone[1] = 12
   mem_clone[2] = 2
   intcode(mut mem_clone, 0)
-  v0 := mem_clone[0]
   println(mem_clone[0])
 
   println('Part 2')

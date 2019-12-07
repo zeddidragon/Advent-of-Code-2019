@@ -69,12 +69,18 @@ fn intcode(mem mut []int, input int) []int {
         }
         mem[mem[pos + 3]] = v
       }
+      99 {
+        return output
+      }
+      else {
+        println('opcode not implemented: $opcode')
+        return output
+      }
     }
 
     $if debug {
       println('jump: $jump')
     }
-
   }
 
   return output
