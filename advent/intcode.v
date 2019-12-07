@@ -1,8 +1,9 @@
 module advent
 
-fn intcode(mem mut []int, input int) []int {
+fn intcode(mem mut []int, input []int) []int {
   mut jump := 0
   mut output := []int
+  mut input_idx := 0
 
   for pos := 0; pos < mem.len; pos = jump {
     op := mem[pos]
@@ -46,7 +47,7 @@ fn intcode(mem mut []int, input int) []int {
       // mul
       2 { mem[mem[pos + 3]] = args[0] * args[1] }
       // read
-      3 { mem[mem[pos + 1]] = input }
+      3 { mem[mem[pos + 1]] = input[input_idx++] }
       // yield
       4 { output << args[0] }
       // if
