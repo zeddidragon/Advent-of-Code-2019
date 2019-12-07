@@ -14,8 +14,7 @@ struct Intersection {
   pos Vec2
 }
 
-fn day03() {
-  println('Part 1')
+pub fn day03() {
   f := os.read_file('input/input03') or {
     println('input03 not found!')
     return
@@ -23,7 +22,7 @@ fn day03() {
 
   wires := f.split('\n')
 
-  mut grid := map[string]int
+  grid := map[string]int
   mut lines := []Stretch
   mut inters := []Intersection
 

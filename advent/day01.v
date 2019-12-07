@@ -7,8 +7,7 @@ fn fuel(weight int) int {
   return max(weight / 3 - 2, 0)
 }
 
-fn day01() {
-  println('Part 1')
+pub fn day01() {
   f := os.read_file('input/input01') or {
     println('input01 not found!')
     return

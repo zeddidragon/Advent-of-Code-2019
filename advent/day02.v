@@ -3,8 +3,7 @@ module advent
 import os
 
 
-fn day02() {
-  println('Part 1')
+pub fn day02() {
   f := os.read_file('input/input02') or {
     println('input02 not found!')
     return

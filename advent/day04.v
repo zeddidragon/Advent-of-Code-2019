@@ -34,8 +34,7 @@ fn count(range []int, strict bool) int {
   return n
 }
 
-fn day04() {
-  println('Part 1')
+pub fn day04() {
   f := os.read_file('input/input04') or {
     println('input04 not found!')
     return
