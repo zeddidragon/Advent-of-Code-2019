@@ -22,4 +22,5 @@ fn main() {
   run(4, day, advent.day04)
   run(5, day, advent.day05)
   run(6, day, advent.day06)
+  run(7, day, advent.day07)
 }
