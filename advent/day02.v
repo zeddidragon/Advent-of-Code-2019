@@ -11,7 +11,7 @@ pub fn day02() {
   mem[1] = 12
   mem[2] = 2
   mut machine := ic_init(mem)
-  machine.run() or { panic }
+  machine.run() or { panic(err) }
   println(machine.mem[0])
 
   for j := 0; j < 100; j++ {

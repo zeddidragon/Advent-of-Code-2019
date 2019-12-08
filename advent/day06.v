@@ -22,7 +22,7 @@ fn trace_orbit(orbits map[string]string, body string) []string {
 }
 
 pub fn day06() {
-  f := os.read_lines('input/input06') or { panic }
+  f := os.read_lines('input/input06') or { panic(err) }
 
   mut orbits := map[string]string
   bodies := f.map(it.split(')')[1])
@@ -37,7 +37,6 @@ pub fn day06() {
   }
 
   println(total)
-  println('Part 2')
   you_path := trace_orbit(orbits, 'YOU')
   san_path := trace_orbit(orbits, 'SAN')
 

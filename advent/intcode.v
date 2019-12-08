@@ -4,7 +4,6 @@ enum IntState {
   done
   await
   yield
-  throw
 }
 
 struct IntMachine {
@@ -51,7 +50,7 @@ fn (m mut IntMachine) w_arg(n int, value int) {
 
 fn (m mut IntMachine) run_until_result() ?int {
   for {
-    result := m.run() or { panic }
+    result := m.run() or { panic(err) }
     match result.state {
       .done { return error('result never yielded') }
       .await { return error('machine needs more input') }
@@ -111,10 +110,6 @@ fn (m mut IntMachine) run() ?IntResult {
       }
       99 { return IntResult { IntState.done, 0 } } // exit
       else { return error('opcode not implemented: $op') }
-    }
-
-    $if debug {
-      println('jump: $jump')
     }
   }
 
