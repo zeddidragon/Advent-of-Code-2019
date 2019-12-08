@@ -35,16 +35,11 @@ fn count(range []int, strict bool) int {
 }
 
 pub fn day04() {
-  f := os.read_file('input/input04') or {
-    println('input04 not found!')
-    return
-  }
+  f := os.read_file('input/input04') or { panic(err) }
 
   lines := f.split('-')
   range := lines.map(it.int())
 
-  println(count(range, false))
-
-  println('Part 2')
-  println(count(range, true))
+  println(count(range, false)) // Part 1
+  println(count(range, true)) // Part 2
 }

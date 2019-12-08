@@ -1,13 +1,70 @@
 module advent
 
-fn intcode(mem mut []int, input []int) []int {
-  mut jump := 0
-  mut output := []int
-  mut input_idx := 0
+enum IntState {
+  done
+  await
+  yield
+  throw
+}
 
-  for pos := 0; pos < mem.len; pos = jump {
-    op := mem[pos]
+struct IntMachine {
+  mut:
+    mem []int
+    pos int
+    input int
+    has_input bool
+}
 
+struct IntResult {
+  state IntState
+  value int
+}
+
+fn ic_init(mem []int) IntMachine {
+  return IntMachine { arr_copy(mem), 0, 0, false }
+}
+
+fn (m mut IntMachine) feed(input int) {
+  m.input = input
+  m.has_input = true
+}
+
+fn (m IntMachine) ptr(idx int) int {
+  return m.mem[m.mem[idx]]
+}
+
+fn (m IntMachine) arg(n int) int {
+  op := m.mem[m.pos]
+  idx := m.pos + n + 1
+  p := pow(10, n + 1)
+  mode := (op / p) % 10
+  v := m.mem[idx]
+  if mode == 0 { return m.mem[v] }
+  if mode == 1 { return v }
+  println("Unknown mode: $mode (@${m.pos})")
+  return 0
+}
+
+fn (m mut IntMachine) w_arg(n int, value int) {
+  idx := m.pos + n + 1
+  m.mem[m.mem[idx]] = value
+}
+
+fn (m mut IntMachine) run_until_result() ?int {
+  for {
+    result := m.run() or { panic }
+    match result.state {
+      .done { return error('result never yielded') }
+      .await { return error('machine needs more input') }
+      else { if result.value != 0 { return result.value } }
+    }
+  }
+  return 0 // Appease compiler
+}
+
+fn (m mut IntMachine) run() ?IntResult {
+  for jump := m.pos; m.pos < m.mem.len; m.pos = jump {
+    op := m.mem[m.pos]
     argc := match op % 100 {
       1 { 3 }
       2 { 3 }
@@ -19,64 +76,42 @@ fn intcode(mem mut []int, input []int) []int {
       8 { 3 }
       else { 0 }
     }
-    jump = pos + argc + 1
+    jump = m.pos + argc + 1
 
-    mut args := [0].repeat(argc)
-    for i := 0; i < argc; i++ {
-      idx := pos + i + 1
-      v := mem[idx]
-      p := pow(10, i + 1)
-      mode := (op / p) % 10
-      args[i] = match mode {
-        0 { mem[v] }
-        1 { v }
-        else { 0 }
+    match op % 100 {
+      1 { m.w_arg(2, m.arg(0) + m.arg(1)) } // add
+      2 { m.w_arg(2, m.arg(0) * m.arg(1)) } // mul
+      3 { // read
+        if m.has_input {
+          m.w_arg(0, m.input)
+          m.has_input = false
+        } else {
+          return IntResult { IntState.await, 0 }
+        }
       }
-    }
-
-    opcode := op % 100
-    $if debug {
-      println('op: $op  opc: $opcode')
-      println(mem[(pos + 1)..(pos + 1 + argc)])
-      println(args)
-    }
-
-    match opcode {
-      // add
-      1 { mem[mem[pos + 3]] = args[0] + args[1] }
-      // mul
-      2 { mem[mem[pos + 3]] = args[0] * args[1] }
-      // read
-      3 { mem[mem[pos + 1]] = input[input_idx++] }
-      // yield
-      4 { output << args[0] }
-      // if
-      5 { if args[0] != 0 { jump = args[1] } }
-      // unless
-      6 { if args[0] == 0 { jump = args[1] } }
-      // lt
-      7 {
-        v := match args[0] < args[1] {
+      4 {
+        result := m.arg(0)
+        m.pos = jump
+        return IntResult { IntState.yield, result }
+      } // yield
+      5 { if m.arg(0) != 0 { jump = m.arg(1) } } // if
+      6 { if m.arg(0) == 0 { jump = m.arg(1) } } // unless
+      7 { // lt
+        v := match m.arg(0) < m.arg(1) {
           true { 1 }
           else { 0 }
         }
-        mem[mem[pos + 3]] = v
+        m.w_arg(2, v)
       }
-      // ft
-      8 {
-        v := match args[0] == args[1] {
+      8 { // eq
+        v := match m.arg(0) == m.arg(1) {
           true { 1 }
           else { 0 }
         }
-        mem[mem[pos + 3]] = v
+        m.w_arg(2, v)
       }
-      99 {
-        return output
-      }
-      else {
-        println('opcode not implemented: $opcode')
-        return output
-      }
+      99 { return IntResult { IntState.done, 0 } } // exit
+      else { return error('opcode not implemented: $op') }
     }
 
     $if debug {
@@ -84,5 +119,5 @@ fn intcode(mem mut []int, input []int) []int {
     }
   }
 
-  return output
+  return IntResult { IntState.done, 1 }
 }

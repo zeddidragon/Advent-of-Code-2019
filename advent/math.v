@@ -22,3 +22,10 @@ fn pow(base int, exp int) int {
   }
   return v
 }
+
+fn has_digit(base int, digit int) bool {
+  for div := 1; base / div > 0; div *= 10 {
+    if base / div % 10 == digit { return true }
+  }
+  return false
+}

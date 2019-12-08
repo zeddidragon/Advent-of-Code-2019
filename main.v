@@ -6,7 +6,7 @@ import advent
 
 fn run(day int, only int, op fn()) {
   if only == 0 || day == only {
-    println('Day: $day')
+    println('\nDay: $day\n--------')
     op()
   }
 }

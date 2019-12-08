@@ -8,10 +8,7 @@ fn fuel(weight int) int {
 }
 
 pub fn day01() {
-  f := os.read_file('input/input01') or {
-    println('input01 not found!')
-    return
-  }
+  f := os.read_file('input/input01') or { panic(err) }
 
   mut cost := 0
   mut cost2 := 0
@@ -23,8 +20,6 @@ pub fn day01() {
     }
   }
   println(cost)
-
-  println('Part 2')
   println(cost2)
 }
 

@@ -4,27 +4,25 @@ import os
 
 
 pub fn day02() {
-  f := os.read_file('input/input02') or { panic }
+  f := os.read_file('input/input02') or { panic(err) }
 
   code_strs := f.split(',')
-  mem := code_strs.map(it.int())
+  mut mem := code_strs.map(it.int())
+  mem[1] = 12
+  mem[2] = 2
+  mut machine := ic_init(mem)
+  machine.run() or { panic }
+  println(machine.mem[0])
 
-  mut mem_clone := arr_copy(mem)
-  mem_clone[1] = 12
-  mem_clone[2] = 2
-  intcode(mut mem_clone, [])
-  println(mem_clone[0])
-
-  println('Part 2')
   for j := 0; j < 100; j++ {
     for i := 0; i < j; i++ {
-      mem_clone = arr_copy(mem)
-      mem_clone[1] = i
-      mem_clone[2] = j
-      intcode(mut mem_clone, [])
-      if mem_clone[0] == 19690720 {
+      mem[1] = i
+      mem[2] = j
+      machine = ic_init(mem)
+      machine.run() or { panic(err) }
+      if machine.mem[0] == 19690720 {
         p := i * 100 + j
-        println('1: $i  2: $j  product: $p')
+        println(i * 100 + j)
         return
       }
     }

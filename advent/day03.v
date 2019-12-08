@@ -15,10 +15,7 @@ struct Intersection {
 }
 
 pub fn day03() {
-  f := os.read_file('input/input03') or {
-    println('input03 not found!')
-    return
-  }
+  f := os.read_file('input/input03') or { panic(err) }
 
   wires := f.split('\n')
 
@@ -61,10 +58,8 @@ pub fn day03() {
       shortest = dist
     }
   }
-
   println(shortest)
 
-  println('Part 2')
   shortest = inters[1].cost
   for inter in inters[1..] {
     total := inter.cost

@@ -4,19 +4,17 @@ import os
 
 
 pub fn day05() {
-  f := os.read_file('input/input05') or {
-    println('input05 not found!')
-    return
-  }
+  f := os.read_file('input/input05') or { panic(err) }
   code_strs := f.split(',')
   mem := code_strs.map(it.int())
-
-  mut mem_clone := arr_copy(mem)
-  mut out := intcode(mut mem_clone, [1])
+  mut machine := ic_init(mem)
+  machine.feed(1)
+  out := machine.run_until_result() or { panic(err) }
   println(out)
 
-  println('Part 2')
-  mem_clone = arr_copy(mem)
-  out = intcode(mut mem_clone, [5])
-  println(out)
+  // Part 2
+  machine = ic_init(mem)
+  machine.feed(5)
+  out2 := machine.run_until_result() or { panic(err) }
+  println(out2)
 }
