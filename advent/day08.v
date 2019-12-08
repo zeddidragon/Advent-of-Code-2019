@@ -47,16 +47,10 @@ pub fn day08() {
     message += '\n'
   }
   print(message)
-
-  /*
-
-  mut message := ''
-  for j in 0..height {
-    range := picture[(j * width)..((j + 1) * width)]
-    println(range)
-    line := range.map(to_pix(it))
-    message += '$line\n'
-  }
-  println(message)
-  */
 }
+
+// Pitfall today:
+
+// Strings can only be built using +=
+// No join(',') to decide how an array might be rendered.
+// The result feels pretty slow.
