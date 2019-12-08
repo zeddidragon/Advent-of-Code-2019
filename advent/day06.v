@@ -41,7 +41,6 @@ pub fn day06() {
   you_path := trace_orbit(orbits, 'YOU')
   san_path := trace_orbit(orbits, 'SAN')
 
-  mut dist := -1
   for j, a in you_path {
     for i, b in san_path {
       if a == b {

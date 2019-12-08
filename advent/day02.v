@@ -21,7 +21,6 @@ pub fn day02() {
       machine = ic_init(mem)
       machine.run() or { panic(err) }
       if machine.mem[0] == 19690720 {
-        p := i * 100 + j
         println(i * 100 + j)
         return
       }

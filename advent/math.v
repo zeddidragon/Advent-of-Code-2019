@@ -16,11 +16,15 @@ fn abs(a int) int {
 }
 
 fn pow(base int, exp int) int {
-  mut v := base
+  mut v := 1
   for i := 0; i < exp; i++ {
     v *= base
   }
   return v
+}
+
+fn nth_digit(v int, exp int) int {
+  return v / pow(10, exp) % 10
 }
 
 fn has_digit(base int, digit int) bool {

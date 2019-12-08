@@ -19,7 +19,6 @@ pub fn day03() {
 
   wires := f.split('\n')
 
-  grid := map[string]int
   mut lines := []Stretch
   mut inters := []Intersection
 

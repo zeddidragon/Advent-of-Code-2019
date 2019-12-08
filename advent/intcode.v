@@ -36,8 +36,7 @@ fn (m IntMachine) ptr(idx int) int {
 fn (m IntMachine) arg(n int) int {
   op := m.mem[m.pos]
   idx := m.pos + n + 1
-  p := pow(10, n + 1)
-  mode := (op / p) % 10
+  mode := nth_digit(op, n + 2)
   v := m.mem[idx]
   if mode == 0 { return m.mem[v] }
   if mode == 1 { return v }
