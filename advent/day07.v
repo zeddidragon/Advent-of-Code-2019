@@ -3,14 +3,14 @@ module advent
 import os
 
 
-fn generate_phases(max int, mag int, base int) []int{
+fn generate_phases(max int, mag int, base i64) []i64 {
   if mag >= max {
     return [base]
   }
-  mut phases := []int
+  mut phases := []i64
   for i in 1..6 {
     if has_digit(base, i) { continue }
-    next := base + i * pow(10, mag)
+    next := pow(10, mag) * i + base
     extracted := generate_phases(max, mag + 1, next)
     for phase in extracted {
       phases << phase
@@ -19,7 +19,7 @@ fn generate_phases(max int, mag int, base int) []int{
   return phases
 }
 
-fn create_rig(mem []int) []IntMachine {
+fn create_rig(mem []i64) []IntMachine {
   rig := [ic_init(mem)].repeat(5)
   return rig
 }
@@ -27,13 +27,13 @@ fn create_rig(mem []int) []IntMachine {
 pub fn day07() {
   f := os.read_file('input/input07') or { panic(err) }
   code_strs := f.split(',')
-  mem := code_strs.map(it.int())
+  mem := code_strs.map(it.i64())
 
-  mut phases := generate_phases(5, 0, 0) // 12345, not 01234
+  phases := generate_phases(5, 0, 0) // 12345, not 01234
 
-  mut best := 0
+  mut best := i64(0)
   for phase in phases {
-    mut out := 0
+    mut out := i64(0)
     mut rig := create_rig(mem)
     for i in 0..5 {
       mut machine := rig[0]
@@ -58,7 +58,7 @@ pub fn day07() {
     }
 
     // Cycle signal until program is done
-    mut out := 0
+    mut out := i64(0)
     for idx := 0; ; idx = (idx + 1) % rig.len {
       rig[idx].feed(out)
       result := rig[idx].run() or { panic(err) }

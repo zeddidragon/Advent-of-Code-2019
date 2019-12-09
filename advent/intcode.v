@@ -8,47 +8,57 @@ enum IntState {
 
 struct IntMachine {
   mut:
-    mem []int
+    mem []i64
     pos int
-    input int
+    base int
+    input i64
     has_input bool
 }
 
 struct IntResult {
   state IntState
-  value int
+  value i64
 }
 
-fn ic_init(mem []int) IntMachine {
-  return IntMachine { arr_copy(mem), 0, 0, false }
+fn ic_init(mem []i64) IntMachine {
+  return IntMachine {
+    mem: mem.map(it)
+    pos: 0
+    base: 0
+    input: 0
+    has_input: false
+  }
 }
 
-fn (m mut IntMachine) feed(input int) {
+fn (m mut IntMachine) feed(input i64) {
   m.input = input
   m.has_input = true
 }
 
-fn (m IntMachine) ptr(idx int) int {
-  return m.mem[m.mem[idx]]
-}
-
-fn (m IntMachine) arg(n int) int {
+fn (m IntMachine) arg(n int) i64 {
   op := m.mem[m.pos]
   idx := m.pos + n + 1
   mode := nth_digit(op, n + 2)
-  v := m.mem[idx]
-  if mode == 0 { return m.mem[v] }
-  if mode == 1 { return v }
-  println("Unknown mode: $mode (@${m.pos})")
-  return 0
+  v := if idx >= m.mem.len { 0 } else { m.mem[idx] }
+  access := match mode {
+    0 { v }
+    1 { idx }
+    2 { m.base + v }
+    else { -1 }
+  }
+  if access >= m.mem.len { return 0 }
+  return m.mem[access]
 }
 
-fn (m mut IntMachine) w_arg(n int, value int) {
+fn (m mut IntMachine) w_arg(n int, value i64) {
   idx := m.pos + n + 1
+  if idx >= m.mem.len {
+    m.mem << [0].repeat(idx - m.mem.len)
+  }
   m.mem[m.mem[idx]] = value
 }
 
-fn (m mut IntMachine) run_until_result() ?int {
+fn (m mut IntMachine) run_until_result() ?i64 {
   for {
     result := m.run() or { panic(err) }
     match result.state {
@@ -72,9 +82,18 @@ fn (m mut IntMachine) run() ?IntResult {
       6 { 2 }
       7 { 3 }
       8 { 3 }
+      9 { 1 }
       else { 0 }
     }
     jump = m.pos + argc + 1
+
+    $if debug {
+      print('op: $op  ')
+      for i in 0..argc {
+        print("arg$i: ${m.arg(i)}  ")
+      }
+      print('\n')
+    }
 
     match op % 100 {
       1 { m.w_arg(2, m.arg(0) + m.arg(1)) } // add
@@ -108,6 +127,7 @@ fn (m mut IntMachine) run() ?IntResult {
         }
         m.w_arg(2, v)
       }
+      9 { m.base += m.arg(0) } //rel
       99 { return IntResult { IntState.done, 0 } } // exit
       else { return error('opcode not implemented: $op') }
     }

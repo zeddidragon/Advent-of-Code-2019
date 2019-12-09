@@ -5,12 +5,12 @@ import os
 
 struct Stretch {
   id int
-  cost int
+  cost i64
   line Line2
 }
 
 struct Intersection {
-  cost int
+  cost i64
   pos Vec2
 }
 
@@ -25,7 +25,7 @@ pub fn day03() {
   for j, wire in wires {
     id := j + 1
     mut pos := Vec2{0, 0}
-    mut cost := 0
+    mut cost := i64(0)
 
     for move in wire.split(',') {
       prev := pos.copy()

@@ -2,8 +2,8 @@ module advent
 
 struct Vec2 {
   mut:
-    x int
-    y int
+    x i64
+    y i64
 }
 
 fn (p Vec2) copy() Vec2 {
@@ -14,7 +14,7 @@ pub fn (p Vec2) str() string {
   return '($p.x,$p.y)'
 }
 
-fn (p mut Vec2) move(dir byte, dist int) {
+fn (p mut Vec2) move(dir byte, dist i64) {
   match dir {
     `L` { p.x -= dist }
     `R` { p.x += dist }
@@ -24,11 +24,11 @@ fn (p mut Vec2) move(dir byte, dist int) {
   }
 }
 
-fn (p Vec2) manhattan() int {
+fn (p Vec2) manhattan() i64 {
   return abs(p.x) + abs(p.y)
 }
 
-fn (a Vec2) manhattan_to(b Vec2) int {
+fn (a Vec2) manhattan_to(b Vec2) i64 {
   return (a - b).manhattan()
 }
 
@@ -40,7 +40,7 @@ fn (a Vec2) - (b Vec2) Vec2 {
   return Vec2 {a.x - b.x, a.y - b.y}
 }
 
-fn (a Vec2) * (s int) Vec2 {
+fn (a Vec2) * (s i64) Vec2 {
   return Vec2 {a.x * s, a.y * s }
 }
 
@@ -53,7 +53,7 @@ pub fn (l Line2) str() string {
   return '[$l.a-$l.b]'
 }
 
-fn (l Line2) manhattan() int {
+fn (l Line2) manhattan() i64 {
   return l.a.manhattan_to(l.b)
 }
 
@@ -88,10 +88,10 @@ struct Box2 {
   dims Vec2
 }
 
-fn (box Box2) left()   int { return box.pos.x }
-fn (box Box2) right()  int { return box.pos.x + box.dims.x }
-fn (box Box2) top()    int { return box.pos.y }
-fn (box Box2) bottom() int { return box.pos.y + box.dims.y }
+fn (box Box2) left()   i64 { return box.pos.x }
+fn (box Box2) right()  i64 { return box.pos.x + box.dims.x }
+fn (box Box2) top()    i64 { return box.pos.y }
+fn (box Box2) bottom() i64 { return box.pos.y + box.dims.y }
 
 fn (box Box2) inter(other Box2) ?Box2 {
   x := max(box.left(), other.left())

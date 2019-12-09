@@ -1,21 +1,21 @@
 module advent
 
-fn min(a int, b int) int {
+fn min(a i64, b i64) i64 {
   if a < b { return a }
   return b
 }
 
-fn max(a int, b int) int {
+fn max(a i64, b i64) i64 {
   if a > b { return a }
   return b
 }
 
-fn abs(a int) int {
+fn abs(a i64) i64 {
   if a < 0 { return -a }
   return a
 }
 
-fn pow(base int, exp int) int {
+fn pow(base i64, exp int) i64 {
   mut v := 1
   for i := 0; i < exp; i++ {
     v *= base
@@ -23,11 +23,11 @@ fn pow(base int, exp int) int {
   return v
 }
 
-fn nth_digit(v int, exp int) int {
+fn nth_digit(v i64, exp int) int {
   return v / pow(10, exp) % 10
 }
 
-fn has_digit(base int, digit int) bool {
+fn has_digit(base i64, digit int) bool {
   for div := 1; base / div > 0; div *= 10 {
     if base / div % 10 == digit { return true }
   }
