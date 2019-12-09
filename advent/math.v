@@ -16,7 +16,7 @@ fn abs(a i64) i64 {
 }
 
 fn pow(base i64, exp int) i64 {
-  mut v := 1
+  mut v := i64(1)
   for i := 0; i < exp; i++ {
     v *= base
   }
@@ -24,7 +24,7 @@ fn pow(base i64, exp int) i64 {
 }
 
 fn nth_digit(v i64, exp int) int {
-  return v / pow(10, exp) % 10
+  return int(v / pow(10, exp) % 10)
 }
 
 fn has_digit(base i64, digit int) bool {

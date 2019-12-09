@@ -21,8 +21,9 @@ struct IntResult {
 }
 
 fn ic_init(mem []i64) IntMachine {
+  mem_copy := mem.map(it)
   return IntMachine {
-    mem: mem.map(it)
+    mem: mem_copy
     pos: 0
     base: 0
     input: 0
@@ -41,9 +42,9 @@ fn (m IntMachine) arg(n int) i64 {
   mode := nth_digit(op, n + 2)
   v := if idx >= m.mem.len { 0 } else { m.mem[idx] }
   access := match mode {
-    0 { v }
+    0 { int(v) }
     1 { idx }
-    2 { m.base + v }
+    2 { m.base + int(v) }
     else { -1 }
   }
   if access >= m.mem.len { return 0 }
@@ -53,7 +54,7 @@ fn (m IntMachine) arg(n int) i64 {
 fn (m mut IntMachine) w_arg(n int, value i64) {
   idx := m.pos + n + 1
   if idx >= m.mem.len {
-    m.mem << [0].repeat(idx - m.mem.len)
+    m.mem << [i64(0)].repeat(idx - m.mem.len)
   }
   m.mem[m.mem[idx]] = value
 }
@@ -67,7 +68,7 @@ fn (m mut IntMachine) run_until_result() ?i64 {
       else { if result.value != 0 { return result.value } }
     }
   }
-  return 0 // Appease compiler
+  return i64(0) // Appease compiler
 }
 
 fn (m mut IntMachine) run() ?IntResult {
