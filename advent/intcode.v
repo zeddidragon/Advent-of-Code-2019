@@ -53,10 +53,19 @@ fn (m IntMachine) arg(n int) i64 {
 
 fn (m mut IntMachine) w_arg(n int, value i64) {
   idx := m.pos + n + 1
-  if idx >= m.mem.len {
-    m.mem << [i64(0)].repeat(idx - m.mem.len)
+  v := if idx >= m.mem.len { 0 } else { m.mem[idx] }
+  op := m.mem[m.pos]
+  mode := nth_digit(op, n + 2)
+  access := match mode {
+    0 { int(v) }
+    1 { idx }
+    2 { m.base + int(v) }
+    else { -1 }
   }
-  m.mem[m.mem[idx]] = value
+  if access >= m.mem.len {
+    m.mem << [i64(0)].repeat(access - m.mem.len + 1)
+  }
+  m.mem[access] = value
 }
 
 fn (m mut IntMachine) run_until_result() ?i64 {
