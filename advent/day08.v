@@ -39,8 +39,9 @@ pub fn day08() {
     range := picture[(j * width)..((j + 1) * width)]
     for pixel in range {
       message += match pixel {
-        0 { '#' }
-        1 { ' ' }
+        0 { '■ ' }
+        1 { '□ ' }
+        2 { ' ' }
         else { '?' }
       }
     }
