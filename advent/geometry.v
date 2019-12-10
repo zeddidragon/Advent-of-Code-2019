@@ -57,6 +57,10 @@ fn (a Vec2) eq(b Vec2) bool {
   return a.x == b.x && a.y == b.y
 }
 
+fn (a Vec2) contains(b Vec2) bool {
+  return a.factorized().eq(b.factorized())
+}
+
 struct Line2 {
   a Vec2
   b Vec2

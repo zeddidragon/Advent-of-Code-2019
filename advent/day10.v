@@ -18,6 +18,7 @@ pub fn day10() {
   }
 
   mut best := 0
+  mut best_idx := -1
   for idx_a, a in grid {
     if a != `#` { continue }
     mut seen := 0
@@ -49,7 +50,10 @@ pub fn day10() {
         if !blocked { println('seen: $pos_b') }
       }
     }
-    if seen > best { best = seen }
+    if seen > best {
+      best = seen
+      best_idx = idx_a
+    }
   }
 
   println(best)
