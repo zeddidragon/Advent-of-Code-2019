@@ -8,63 +8,57 @@ struct VisibleAsteroidsResult {
   data []dim2.Vec
 }
 
-fn visible_asteroids(grid grid.Grid, idx_a int, count bool)
+fn visible_asteroids(grid grid.Grid, idx_a int, count_only bool)
 VisibleAsteroidsResult {
-  mut seen_count := 0
+  mut count := 0
   mut seen := []dim2.Vec
-  pos_a := dim2.Vec {
-    x: idx_a % grid.width
-    y: idx_a / grid.width
-  }
+  pos_a := grid.pos_at_idx(idx_a)
   for idx_b, b in grid.data {
     if b != `#` || idx_a == idx_b { continue }
-    pos_b := dim2.Vec {
-      x: idx_b % grid.width
-      y: idx_b / grid.width
-    }
+    pos_b := grid.pos_at_idx(idx_b)
 
     b_diff := pos_b - pos_a
     unit := b_diff.factorized()
-    $if debug {
-      println("a: $pos_a b: $pos_b unit: $unit")
-    }
+    // $if debug { println("a: $pos_a b: $pos_b unit: $unit") }
     mut blocked := false
     for pos := pos_a + unit; !pos.eq(pos_b); pos = pos + unit {
-      idx_c := pos.x + pos.y * grid.width
+      idx_c := grid.idx_at_pos(pos)
       if grid.data[idx_c] == `#` {
         blocked = true
         break
       }
     }
     if !blocked {
-      seen_count++
-      if !count {
+      count++
+      if !count_only {
         seen << pos_b
         angle := b_diff.angle()
         for i, pos_c in seen {
           c_diff := pos_c - pos_a
-          if c_diff.angle() > angle {
-            mut shift := pos_c
-            for j, next in seen[(i + 1)..] {
-              seen[j] = shift
+          if angle < c_diff.angle() {
+            mut shift := pos_b
+            for j, next in seen[i..] {
+              seen[j + i] = shift
               shift = next
             }
-            seen[i] = shift
+            break
           }
         }
+        diffs := seen.map(it - pos_a)
+        angles := diffs.map(it.angle().str())
       }
-      $if debug { println('seen: $pos_b') }
+      // $if debug { println('seen: $pos_b') }
     }
   }
   return VisibleAsteroidsResult {
-    count: seen_count
+    count: count
     data: seen
   }
 }
 
 pub fn day10() {
   lines := os.read_lines('input/input10') or { panic(err) }
-  grid := grid.from_lines(lines)
+  mut grid := grid.from_lines(lines)
 
   mut best := 0
   mut best_idx := -1
@@ -78,6 +72,29 @@ pub fn day10() {
   }
 
   println(best)
+
+  mut shot := 0
+  for shot < 200 {
+    visible := visible_asteroids(grid, best_idx, false).data
+    base := grid.pos_at_idx(best_idx)
+    $if debug { println('loop') }
+    for pos in visible {
+      idx := grid.idx_at_pos(pos)
+      grid.data[idx] = `.`
+      shot++
+
+      $if debug {
+        diff := pos - base
+        angle := diff.angle()
+        println('$shot| $base - $pos = $diff ($angle)')
+      }
+
+      if shot == 200 {
+        println(pos.x * 100 + pos.y)
+        break
+      }
+    }
+  }
 }
 
 

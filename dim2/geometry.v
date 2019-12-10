@@ -14,7 +14,12 @@ pub fn (v Vecf) normalize() Vecf {
 }
 
 pub fn (v Vecf) angle() f64 {
-  return math.atan2(v.y, v.x)
+  angle := math.atan2(v.x, -v.y)
+  if angle < 0 {
+    return 2.0 * math.pi - math.abs(angle)
+  } else {
+    return angle
+  }
 }
 
 pub struct Vec {
