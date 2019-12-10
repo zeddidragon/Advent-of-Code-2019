@@ -1,6 +1,6 @@
 module advent
 import os
-import geometry
+import dim2
 
 pub fn day10() {
   lines := os.read_lines('input/input10') or { panic(err) }
@@ -21,14 +21,13 @@ pub fn day10() {
   for idx_a, a in grid {
     if a != `#` { continue }
     mut seen := 0
-    pos_a := geometry.Vec2 {
+    pos_a := dim2.Vec {
       x: idx_a % width
       y: idx_a / width
     }
-    println(pos_a.angle())
     for idx_b, b in grid {
       if b != `#` || idx_a == idx_b { continue }
-      pos_b := geometry.Vec2 {
+      pos_b := dim2.Vec {
         x: idx_b % width
         y: idx_b / width
       }
