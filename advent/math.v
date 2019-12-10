@@ -1,16 +1,16 @@
 module advent
 
-fn min(a i64, b i64) i64 {
+fn min(a int, b int) int {
   if a < b { return a }
   return b
 }
 
-fn max(a i64, b i64) i64 {
+fn max(a int, b int) int {
   if a > b { return a }
   return b
 }
 
-fn abs(a i64) i64 {
+fn abs(a int) int {
   if a < 0 { return -a }
   return a
 }

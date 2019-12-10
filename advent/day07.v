@@ -65,7 +65,7 @@ pub fn day07() {
       match result.state {
         .yield {
           out = result.value
-          if idx == (rig.len - 1) { best = max(best, out) }
+          if idx == (rig.len - 1) && out > best { best = out }
         }
         .done { break }
         else {
