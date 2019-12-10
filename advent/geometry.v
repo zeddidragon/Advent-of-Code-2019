@@ -41,7 +41,20 @@ fn (a Vec2) - (b Vec2) Vec2 {
 }
 
 fn (a Vec2) * (s int) Vec2 {
-  return Vec2 {a.x * s, a.y * s }
+  return Vec2 {a.x * s, a.y * s}
+}
+
+fn (a Vec2) / (s int) Vec2 {
+  return Vec2 {a.x / s, a.y / s}
+}
+
+fn (p Vec2) factorized() Vec2 {
+  factor := largest_factor(abs(p.x), abs(p.y))
+  return Vec2 {p.x / factor, p.y / factor}
+}
+
+fn (a Vec2) eq(b Vec2) bool {
+  return a.x == b.x && a.y == b.y
 }
 
 struct Line2 {
