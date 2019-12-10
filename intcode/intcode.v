@@ -1,4 +1,6 @@
-module advent
+module intcode
+import imath
+
 
 enum IntState {
   done
@@ -6,21 +8,23 @@ enum IntState {
   yield
 }
 
-struct IntMachine {
+pub struct IntMachine {
   mut:
-    mem []i64
     pos int
     base int
     input i64
     has_input bool
+  pub:
+    mem []i64
 }
 
 struct IntResult {
-  state IntState
-  value i64
+  pub:
+    state IntState
+    value i64
 }
 
-fn ic_init(mem []i64) IntMachine {
+pub fn new(mem []i64) IntMachine {
   mem_copy := mem.map(it)
   return IntMachine {
     mem: mem_copy
@@ -31,7 +35,7 @@ fn ic_init(mem []i64) IntMachine {
   }
 }
 
-fn (m mut IntMachine) feed(input i64) {
+pub fn (m mut IntMachine) feed(input i64) {
   m.input = input
   m.has_input = true
 }
@@ -39,7 +43,7 @@ fn (m mut IntMachine) feed(input i64) {
 fn (m IntMachine) arg(n int) i64 {
   op := m.mem[m.pos]
   idx := m.pos + n + 1
-  mode := nth_digit(op, n + 2)
+  mode := imath.nth_digit(op, n + 2)
   v := if idx >= m.mem.len { 0 } else { m.mem[idx] }
   access := match mode {
     0 { int(v) }
@@ -55,7 +59,7 @@ fn (m mut IntMachine) w_arg(n int, value i64) {
   idx := m.pos + n + 1
   v := if idx >= m.mem.len { 0 } else { m.mem[idx] }
   op := m.mem[m.pos]
-  mode := nth_digit(op, n + 2)
+  mode := imath.nth_digit(op, n + 2)
   access := match mode {
     0 { int(v) }
     1 { idx }
@@ -68,7 +72,7 @@ fn (m mut IntMachine) w_arg(n int, value i64) {
   m.mem[access] = value
 }
 
-fn (m mut IntMachine) run_until_result() ?i64 {
+pub fn (m mut IntMachine) run_until_result() ?i64 {
   for {
     result := m.run() or { panic(err) }
     match result.state {
@@ -80,7 +84,7 @@ fn (m mut IntMachine) run_until_result() ?i64 {
   return i64(0) // Appease compiler
 }
 
-fn (m mut IntMachine) run() ?IntResult {
+pub fn (m mut IntMachine) run() ?IntResult {
   for jump := m.pos; m.pos < m.mem.len; m.pos = jump {
     op := m.mem[m.pos]
     argc := match op % 100 {

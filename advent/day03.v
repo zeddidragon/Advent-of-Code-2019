@@ -1,17 +1,17 @@
 module advent
-
 import os
+import geometry
 
 
 struct Stretch {
   id int
   cost int
-  line Line2
+  line geometry.Line2
 }
 
 struct Intersection {
   cost int
-  pos Vec2
+  pos geometry.Vec2
 }
 
 pub fn day03() {
@@ -24,14 +24,14 @@ pub fn day03() {
 
   for j, wire in wires {
     id := j + 1
-    mut pos := Vec2{0, 0}
+    mut pos := geometry.Vec2{0, 0}
     mut cost := 0
 
     for move in wire.split(',') {
       prev := pos.copy()
       dist := move[1..].int()
       pos.move(move[0], dist)
-      l1 := Line2 {prev, pos.copy()}
+      l1 := geometry.Line2 {prev, pos.copy()}
       // Todo: reduce cost after self-intersection
       // This was sufficient to solve my input
       for l2 in lines {

@@ -1,5 +1,4 @@
 module advent
-
 import os
 
 

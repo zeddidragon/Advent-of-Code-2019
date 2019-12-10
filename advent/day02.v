@@ -1,6 +1,6 @@
 module advent
-
 import os
+import intcode
 
 
 pub fn day02() {
@@ -10,7 +10,7 @@ pub fn day02() {
   mut mem := code_strs.map(it.i64())
   mem[1] = 12
   mem[2] = 2
-  mut machine := ic_init(mem)
+  mut machine := intcode.new(mem)
   machine.run() or { panic(err) }
   println(machine.mem[0])
 
@@ -18,7 +18,7 @@ pub fn day02() {
     for i := 0; i < j; i++ {
       mem[1] = i
       mem[2] = j
-      machine = ic_init(mem)
+      machine = intcode.new(mem)
       machine.run() or { panic(err) }
       if machine.mem[0] == 19690720 {
         println(i * 100 + j)

@@ -1,6 +1,7 @@
 module advent
-
 import os
+import intcode
+import imath
 
 
 fn generate_phases(max int, mag int, base i64) []i64 {
@@ -9,8 +10,8 @@ fn generate_phases(max int, mag int, base i64) []i64 {
   }
   mut phases := []i64
   for i in 1..6 {
-    if has_digit(base, i) { continue }
-    next := pow(10, mag) * i + base
+    if imath.has_digit(base, i) { continue }
+    next := imath.pow(10, mag) * i + base
     extracted := generate_phases(max, mag + 1, next)
     for phase in extracted {
       phases << phase
@@ -19,8 +20,8 @@ fn generate_phases(max int, mag int, base i64) []i64 {
   return phases
 }
 
-fn create_rig(mem []i64) []IntMachine {
-  rig := [ic_init(mem)].repeat(5)
+fn create_rig(mem []i64) []intcode.IntMachine {
+  rig := [intcode.new(mem)].repeat(5)
   return rig
 }
 
@@ -37,7 +38,7 @@ pub fn day07() {
     mut rig := create_rig(mem)
     for i in 0..5 {
       mut machine := rig[0]
-      machine.feed(nth_digit(phase - 11111, i))
+      machine.feed(imath.nth_digit(phase - 11111, i))
       machine.run() or { panic(err) }
       machine.feed(out)
       result := machine.run() or { panic(err) }
@@ -53,7 +54,7 @@ pub fn day07() {
 
     // Consume phase settings
     for i in 0..rig.len {
-      rig[i].feed(nth_digit(phase + 44444, i))
+      rig[i].feed(imath.nth_digit(phase + 44444, i))
       rig[i].run() or { panic(err) }
     }
 

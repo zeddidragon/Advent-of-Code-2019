@@ -1,10 +1,10 @@
 module advent
-
 import os
+import imath
 
 
 fn fuel(weight int) int {
-  return max(weight / 3 - 2, 0)
+  return imath.max(weight / 3 - 2, 0)
 }
 
 pub fn day01() {
