@@ -30,7 +30,7 @@ pub fn day03() {
     for move in wire.split(',') {
       prev := pos.copy()
       dist := move[1..].int()
-      pos.move(move[0], dist)
+      pos = pos.move(move[0], dist)
       l1 := dim2.Line {prev, pos.copy()}
       // Todo: reduce cost after self-intersection
       // This was sufficient to solve my input

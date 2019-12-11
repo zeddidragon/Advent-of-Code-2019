@@ -29,20 +29,33 @@ pub struct Vec {
 }
 
 pub fn (p Vec) copy() Vec {
-  return Vec {p.x, p.y}
+  return Vec { p.x, p.y }
 }
 
 pub fn (p Vec) str() string {
   return '($p.x,$p.y)'
 }
 
-pub fn (p mut Vec) move(dir byte, dist int) {
-  match dir {
-    `L` { p.x -= dist }
-    `R` { p.x += dist }
-    `U` { p.y -= dist }
-    `D` { p.y += dist }
-    else {}
+pub fn (p Vec) key() string {
+  return '$p.x,$p.y'
+}
+
+pub fn (p Vec) move(dir byte, dist int) Vec {
+  return match dir {
+    `L` { Vec { p.x - dist, p.y } }
+    `R` { Vec { p.x + dist, p.y } }
+    `U` { Vec { p.x, p.y - dist } }
+    `D` { Vec { p.x, p.y + dist } }
+    else { p.copy() }
+  }
+}
+
+pub fn (p Vec) turn(dir byte) Vec {
+  return match dir {
+    `L` { Vec { p.y, -p.x } }
+    `R` { Vec { -p.y, p.x } }
+    `B` { Vec { -p.x, -p.y } }
+    else { p.copy() }
   }
 }
 
