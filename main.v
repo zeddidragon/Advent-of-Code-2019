@@ -4,7 +4,7 @@ import flags
 
 
 fn run(day int, op fn()) {
-  only := flags.get('day')
+  only := flags.num('day')
   if only == 0 || day == only {
     println('\nDay: $day\n--------')
     op()
