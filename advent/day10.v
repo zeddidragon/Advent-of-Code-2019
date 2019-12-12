@@ -43,10 +43,7 @@ VisibleAsteroidsResult {
             break
           }
         }
-        diffs := seen.map(it - pos_a)
-        angles := diffs.map(it.angle().str())
       }
-      // $if debug { println('seen: $pos_b') }
     }
   }
   return VisibleAsteroidsResult {

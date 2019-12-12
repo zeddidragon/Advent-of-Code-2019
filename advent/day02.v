@@ -12,7 +12,7 @@ pub fn day02() {
   mem[2] = 2
   mut machine := intcode.new(mem)
   machine.run() or { panic(err) }
-  println(machine.mem[0])
+  println(int(machine.mem[0]))
 
   for j := 0; j < 100; j++ {
     for i := 0; i < j; i++ {

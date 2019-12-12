@@ -24,6 +24,15 @@ pub fn (a Vec) manhattan_to(b Vec) int {
   return (a - b).manhattan()
 }
 
+pub fn (p Vec) coord(n int) int {
+  return match n {
+    0 { p.x }
+    1 { p.y }
+    2 { p.z }
+    else { 0 }
+  }
+}
+
 pub fn (a Vec) + (b Vec) Vec {
   return Vec {a.x + b.x, a.y + b.y, a.z + b.z}
 }

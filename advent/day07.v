@@ -46,7 +46,7 @@ pub fn day07() {
     }
     if out > best { best = out }
   }
-  println(best)
+  println(int(best))
 
   best = 0
   for phase in phases {
@@ -76,7 +76,7 @@ pub fn day07() {
       }
     }
   }
-  println(best)
+  println(int(best))
 }
 
 // Pitfalls today:

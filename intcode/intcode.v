@@ -101,14 +101,6 @@ pub fn (m mut IntMachine) run() ?IntResult {
     }
     jump = m.pos + argc + 1
 
-    $if debug {
-      print('op: $op  ')
-      for i in 0..argc {
-        print("arg$i: ${m.arg(i)}  ")
-      }
-      print('\n')
-    }
-
     match op % 100 {
       1 { m.w_arg(2, m.arg(0) + m.arg(1)) } // add
       2 { m.w_arg(2, m.arg(0) * m.arg(1)) } // mul

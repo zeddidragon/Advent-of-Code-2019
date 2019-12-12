@@ -10,11 +10,11 @@ pub fn day05() {
   mut machine := intcode.new(mem)
   machine.feed(1)
   out := machine.run_until_result() or { panic(err) }
-  println(out)
+  println(int(out))
 
   // Part 2
   machine = intcode.new(mem)
   machine.feed(5)
   out2 := machine.run_until_result() or { panic(err) }
-  println(out2)
+  println(int(out2))
 }
