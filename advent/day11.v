@@ -18,12 +18,12 @@ fn paint_program(mem []i64, dry_run bool) int {
     key := pos.key()
     machine.feed(i64(tiles[key]))
 
-    paint_code := machine.run() or { panic }
+    paint_code := machine.run() or { panic(err) }
     if paint_code.state == .done { break }
     if !(key in tiles) { painted << pos }
     tiles[key] = int(paint_code.value)
 
-    turn_code := machine.run() or { panic }
+    turn_code := machine.run() or { panic(err) }
     if turn_code.state == .done { break }
     turn_dir := turn_dirs[int(turn_code.value)]
     dir = dir.turn(turn_dir)

@@ -1,6 +1,5 @@
 module advent
 import os
-import dim2
 import grid
 
 struct VisibleAsteroidsResult {
