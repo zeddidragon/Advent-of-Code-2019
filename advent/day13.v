@@ -14,6 +14,8 @@ fn draw_game(mem []i64, destroy_blocks int) int {
   mut score := 0
   mut ball_x := 0
   mut paddle_x := 0
+
+  pretty := '-pretty' in os.args
   for{
     for {
       mut code := machine.take(3) or { break }
@@ -32,7 +34,7 @@ fn draw_game(mem []i64, destroy_blocks int) int {
           4 { ball_x = x }
           else { }
         }
-        $if debug {
+        if pretty {
           tiles['$x,$y'] = match tile {
             0 { `.` }
             1 { `M` }
@@ -45,7 +47,7 @@ fn draw_game(mem []i64, destroy_blocks int) int {
       }
     }
 
-    $if debug {
+    if pretty {
       width := max_x + 1
       height := max_y + 1
       mut grid_data := [` `].repeat(width * height)
