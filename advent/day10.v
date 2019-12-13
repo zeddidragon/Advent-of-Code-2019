@@ -18,7 +18,6 @@ VisibleAsteroidsResult {
 
     b_diff := pos_b - pos_a
     unit := b_diff.factorized()
-    // $if debug { println("a: $pos_a b: $pos_b unit: $unit") }
     mut blocked := false
     for pos := pos_a + unit; !pos.eq(pos_b); pos = pos + unit {
       idx_c := grid.idx_at_pos(pos)

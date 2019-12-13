@@ -44,7 +44,9 @@ fn paint_program(mem []i64, dry_run bool) int {
   if !dry_run {
     width := max_x - min_x + 1
     height := max_y - min_y + 1
-    println(grid.from_map(tiles, width, height, ['.', '█']))
+    painting := grid.from_map(tiles, width, height, ['.', '█'])
+    if '-pretty' in os.args { println(painting) }
+    println(painting.text())
   }
 
   return painted.len

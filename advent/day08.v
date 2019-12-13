@@ -33,8 +33,9 @@ pub fn day08() {
     }
   }
 
-  mut message := ''
-  println(grid.new(picture, width, ['.', '█', ' ']))
+  message := grid.new(picture, width, ['.', '█', ' '])
+  if '-pretty' in os.args { println(message) }
+  println(message.text())
 }
 
 // Pitfall today:

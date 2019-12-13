@@ -2,6 +2,7 @@ module advent
 import os
 import dim3
 import imath
+import array
 
 
 struct MoonState {
@@ -65,7 +66,7 @@ fn vec3_arr_to_int_arr(vecs []dim3.Vec) []int {
 
 fn new_moon_state(pos_comps []int) MoonState {
   return MoonState {
-    pos: arr_copy(pos_comps)
+    pos: array.clone(pos_comps)
     vel: [0].repeat(pos_comps.len)
   }
 }
@@ -91,7 +92,7 @@ pub fn day12() {
     for {
       ms.step(1)
       count++
-      if arr_eq(ms.pos, slice) && arr_eq(ms.vel, zero_vel) {
+      if array.eq(ms.pos, slice) && array.eq(ms.vel, zero_vel) {
         break
       }
     }
