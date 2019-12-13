@@ -29,6 +29,7 @@ fn draw_game(mem []i64, interactive bool) int {
         match tile {
           3 { paddle_x = x }
           4 { ball_x = x }
+          else { }
         }
         tiles['$x,$y'] = match tile {
           0 { `.` }
