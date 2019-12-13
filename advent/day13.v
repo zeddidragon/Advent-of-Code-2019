@@ -60,8 +60,7 @@ fn draw_game(mem []i64, interactive bool) int {
 
     if interactive {
       $if debug {
-        println(score)
-        println(grid.new(grid_data, width))
+        println('$score\n${grid.new(grid_data, width)}')
       }
       if blocks == 0 { return score }
       machine.feed(imath.sign(ball_x - paddle_x))
