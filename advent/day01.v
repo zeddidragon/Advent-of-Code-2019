@@ -19,8 +19,7 @@ pub fn day01() {
       cost2 += c
     }
   }
-  println(cost)
-  println(cost2)
+  print('\t$cost\t$cost2')
 }
 
 // Pitfalls today:

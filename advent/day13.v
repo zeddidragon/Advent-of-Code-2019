@@ -64,7 +64,7 @@ pub fn day13() {
   mut mem := mem_str.map(it.i64())
 
   blocks := draw_game(mem, -1)
-  println(blocks)
+  print('\t${blocks}')
   mem[0] = 2
-  println(draw_game(mem, blocks))
+  print('\t${draw_game(mem, blocks)}')
 }

@@ -36,14 +36,14 @@ pub fn day06() {
     total += count_orbits(orbits, body)
   }
 
-  println(total)
+  print('\t$total')
   you_path := trace_orbit(orbits, 'YOU')
   san_path := trace_orbit(orbits, 'SAN')
 
   for j, a in you_path {
     for i, b in san_path {
       if a == b {
-        println(i + j)
+        print('\t${i + j}')
         return
       }
     }

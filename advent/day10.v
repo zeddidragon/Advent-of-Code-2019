@@ -66,7 +66,7 @@ pub fn day10() {
     }
   }
 
-  println(best)
+  print('\t${best}')
 
   mut shot := 0
   for shot < 200 {
@@ -85,7 +85,7 @@ pub fn day10() {
       }
 
       if shot == 200 {
-        println(pos.x * 100 + pos.y)
+        print('\t${pos.x * 100 + pos.y}')
         break
       }
     }

@@ -20,7 +20,7 @@ pub fn day08() {
     for pixel in range { count[pixel]++ }
     if count[0] < best[0] { best = count }
   }
-  println(best[1] * best[2])
+  print('\t${best[1] * best[2]}')
 
   // Part 2: Compose layers
   mut picture := [2].repeat(width * height)
@@ -35,7 +35,7 @@ pub fn day08() {
 
   message := grid.new(picture, width, ['.', '█', ' '])
   if '-pretty' in os.args { println(message) }
-  println(message.text())
+  print('\t${message.text()}')
 }
 
 // Pitfall today:

@@ -81,7 +81,7 @@ pub fn day12() {
 
   mut ms := new_moon_state(pos_comps)
   for _ in 0..1000 { ms.step(3) }
-  println(ms.energy())
+  print('\t${ms.energy()}')
 
   mut counts := []int
   zero_vel := [0].repeat(poss.len)
@@ -110,7 +110,7 @@ pub fn day12() {
   for factor := i64(1200000000); ; factor++ {
     product := factor * common
     if imath.is_factor64(product, b) && imath.is_factor64(product, a) {
-      println(product)
+      print('\t${product}')
       break
     }
   }

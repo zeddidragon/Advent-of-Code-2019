@@ -12,7 +12,7 @@ pub fn day02() {
   mem[2] = 2
   mut machine := intcode.new(mem)
   machine.run() or { panic(err) }
-  println(int(machine.mem[0]))
+  print('\t${machine.mem[0].str()}')
 
   for j := 0; j < 100; j++ {
     for i := 0; i < j; i++ {
@@ -21,7 +21,7 @@ pub fn day02() {
       machine = intcode.new(mem)
       machine.run() or { panic(err) }
       if machine.mem[0] == 19690720 {
-        println(i * 100 + j)
+        print('\t${i * 100 + j}')
         return
       }
     }

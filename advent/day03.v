@@ -57,7 +57,7 @@ pub fn day03() {
       shortest = dist
     }
   }
-  println(shortest)
+  print('\t$shortest')
 
   shortest = inters[1].cost
   for inter in inters[1..] {
@@ -66,5 +66,5 @@ pub fn day03() {
       shortest = total
     }
   }
-  println(shortest)
+  print('\t$shortest')
 }

@@ -46,7 +46,7 @@ fn paint_program(mem []i64, dry_run bool) int {
     height := max_y - min_y + 1
     painting := grid.from_map(tiles, width, height, ['.', '█'])
     if '-pretty' in os.args { println(painting) }
-    println(painting.text())
+    print('\t${painting.text()}')
   }
 
   return painted.len
@@ -57,6 +57,6 @@ pub fn day11() {
   mem_str := f.split(',')
   mem := mem_str.map(it.i64())
 
-  println(paint_program(mem, true))
+  print('\t${paint_program(mem, true)}')
   paint_program(mem, false)
 }

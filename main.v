@@ -1,13 +1,16 @@
 module main
 import advent
 import flags
-
+import time
+import term
 
 fn run(day int, op fn()) {
   only := flags.num('day')
   if only == 0 || day == only {
-    println('\nDay: $day\n--------')
+    before := time.ticks()
+    print(term.underline(term.green('Day $day:')))
     op()
+    println(term.dim('\t${time.ticks() - before}ms'))
   }
 }
 

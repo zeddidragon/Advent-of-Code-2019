@@ -39,6 +39,6 @@ pub fn day04() {
   lines := f.split('-')
   range := lines.map(it.int())
 
-  println(count(range, false)) // Part 1
-  println(count(range, true)) // Part 2
+  print('\t${count(range, false)}')
+  print('\t${count(range, true)}')
 }
