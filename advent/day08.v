@@ -34,7 +34,7 @@ pub fn day08() {
   }
 
   message := grid.new(picture, width, ['.', '█', ' '])
-  if '-pretty' in os.args { println(message) }
+  if '-pretty' in os.args { println('\n$message') }
   print('\t${message.text()}')
 }
 

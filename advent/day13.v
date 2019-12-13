@@ -44,7 +44,7 @@ fn draw_game(mem []i64, destroy_blocks int) int {
       grid := grid.from_map(tiles, max_x + 1, max_y + 1, [
         '.', '█', '#', '=', 'o',
       ])
-      println('$score\n$grid')
+      println('\n$score\n$grid\n')
     }
 
     if destroy_blocks >= 0 {
@@ -68,3 +68,9 @@ pub fn day13() {
   mem[0] = 2
   print('\t${draw_game(mem, blocks)}')
 }
+
+// Pitfalls today:
+// 20:19:57 ❯ ./run -pretty
+// advent/day13.v:47:0: 0 character in a string literal
+//   45|         '.', '█', '#', '=', 'o',
+// Can't do terminal control characters :[
