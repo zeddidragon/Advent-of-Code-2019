@@ -25,6 +25,10 @@ pub fn is_factor(v int, div int) bool {
   return (v / div) * div == v
 }
 
+pub fn is_factor64(v i64, div i64) bool {
+  return (v / div) * div == v
+}
+
 pub fn largest_factor(a int, b int) int {
   if a == 0 || b == 0 || a == b { return  max(a, b) }
   for i := max(a, b) / 2; i > 1; i-- {

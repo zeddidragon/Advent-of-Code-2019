@@ -10,9 +10,9 @@ struct MoonState {
     vel []int
 }
 
-fn (ms mut MoonState) step() {
-  len := ms.pos.len / 3
-  for k in 0..3 {
+fn (ms mut MoonState) step(slice int) {
+  len := ms.pos.len / slice
+  for k in 0..slice {
     at := k * len
     to := at + len
     for j, a in ms.pos[at..to] {
@@ -63,6 +63,13 @@ fn vec3_arr_to_int_arr(vecs []dim3.Vec) []int {
   return ret
 }
 
+fn new_moon_state(pos_comps []int) MoonState {
+  return MoonState {
+    pos: arr_copy(pos_comps)
+    vel: [0].repeat(pos_comps.len)
+  }
+}
+
 pub fn day12() {
   lines := os.read_lines('input/input12') or { panic(err) }
   mut poss := [dim3.Vec { 0, 0, 0 }].repeat(lines.len)
@@ -70,14 +77,42 @@ pub fn day12() {
     poss[i] = parse_vec3(line)
   }
   pos_comps := vec3_arr_to_int_arr(poss)
-  vel_comps := [0].repeat(pos_comps.len)
-  mut ms := MoonState { pos_comps, vel_comps }
 
-  for _ in 0..1000 {
-    ms.step()
+  mut ms := new_moon_state(pos_comps)
+  for _ in 0..1000 { ms.step(3) }
+  println(ms.energy())
+
+  mut counts := []int
+  zero_vel := [0].repeat(poss.len)
+  for j in 0..3 {
+    mut slice := pos_comps[(j * poss.len)..((j + 1) * poss.len)]
+    ms = new_moon_state(slice)
+    mut count := 0
+    for {
+      ms.step(1)
+      count++
+      if arr_eq(ms.pos, slice) && arr_eq(ms.vel, zero_vel) {
+        break
+      }
+    }
+    counts << count
   }
 
-  println(ms.energy())
+  mut common := i64(0)
+  for n in counts { if i64(n) > common { common = i64(n) } }
+  mut a := common
+  for n in counts { if i64(n) < a { a = i64(n) } }
+  mut b := a
+  for n in counts { if i64(n) > a && i64(n) < common { b = i64(n) } }
+
+  // Cheapo optimization, may not work for your purposes
+  for factor := i64(1200000000); ; factor++ {
+    product := factor * common
+    if imath.is_factor64(product, b) && imath.is_factor64(product, a) {
+      println(product)
+      break
+    }
+  }
 }
 
 
