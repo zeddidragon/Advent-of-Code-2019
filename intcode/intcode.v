@@ -84,6 +84,18 @@ pub fn (m mut IntMachine) run_until_result() ?i64 {
   return i64(0) // Appease compiler
 }
 
+pub fn (m mut IntMachine) take(n int) ?[]i64 {
+  mut taken := [i64(0)].repeat(n)
+  for i in 0..n {
+    result :=  m.run() or { panic(err) }
+    match result.state {
+      .done { return error('not enough values') }
+      .await { return error('machine needs more input') }
+      else { taken[i] = result.value } }
+  }
+  return taken
+}
+
 pub fn (m mut IntMachine) run() ?IntResult {
   for jump := m.pos; m.pos < m.mem.len; m.pos = jump {
     op := m.mem[m.pos]
