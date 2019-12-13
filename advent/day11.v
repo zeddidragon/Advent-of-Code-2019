@@ -44,17 +44,16 @@ fn paint_program(mem []i64, dry_run bool) int {
   if !dry_run {
     width := max_x - min_x + 1
     height := max_y - min_y + 1
-    mut grid_data := [` `].repeat(width * height)
+    mut grid_data := [0].repeat(width * height)
     mut idx := 0
     for y in min_y..(max_y + 1) {
       for x in min_x..(max_x + 1) {
-        if tiles['$x,$y'] == 1 {
-          grid_data[idx] = `#`
-        }
+        tile := tiles['$x,$y']
+        if tile > 0 { grid_data[idx] = tile }
         idx++
       }
     }
-    println(grid.new(grid_data, width))
+    println(grid.new(grid_data, width, ['.', '█']))
   }
 
   return painted.len

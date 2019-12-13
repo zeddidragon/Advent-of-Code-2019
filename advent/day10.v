@@ -13,7 +13,7 @@ VisibleAsteroidsResult {
   mut seen := []dim2.Vec
   pos_a := grid.pos_at_idx(idx_a)
   for idx_b, b in grid.data {
-    if b != `#` || idx_a == idx_b { continue }
+    if b != 1 || idx_a == idx_b { continue }
     pos_b := grid.pos_at_idx(idx_b)
 
     b_diff := pos_b - pos_a
@@ -22,7 +22,7 @@ VisibleAsteroidsResult {
     mut blocked := false
     for pos := pos_a + unit; !pos.eq(pos_b); pos = pos + unit {
       idx_c := grid.idx_at_pos(pos)
-      if grid.data[idx_c] == `#` {
+      if grid.data[idx_c] == 1 {
         blocked = true
         break
       }
@@ -54,12 +54,12 @@ VisibleAsteroidsResult {
 
 pub fn day10() {
   lines := os.read_lines('input/input10') or { panic(err) }
-  mut grid := grid.from_lines(lines)
+  mut grid := grid.from_lines(lines, ['.', '#'])
 
   mut best := 0
   mut best_idx := -1
   for idx, c in grid.data {
-    if c != `#` { continue }
+    if c != 1 { continue }
     seen := visible_asteroids(grid, idx, true).count
     if seen > best {
       best = seen
@@ -76,7 +76,7 @@ pub fn day10() {
     $if debug { println('loop') }
     for pos in visible {
       idx := grid.idx_at_pos(pos)
-      grid.data[idx] = `.`
+      grid.data[idx] = 0
       shot++
 
       $if debug {

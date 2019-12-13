@@ -1,5 +1,6 @@
 module advent
 import os
+import grid
 
 pub fn day08() {
   f := os.read_file('input/input08') or { panic(err) }
@@ -33,19 +34,7 @@ pub fn day08() {
   }
 
   mut message := ''
-  for j in 0..height {
-    range := picture[(j * width)..((j + 1) * width)]
-    for pixel in range {
-      message += match pixel {
-        0 { '█' }
-        1 { ' ' }
-        2 { ' ' }
-        else { '?' }
-      }
-    }
-    message += '\n'
-  }
-  print(message)
+  println(grid.new(picture, width, ['.', '█', ' ']))
 }
 
 // Pitfall today:

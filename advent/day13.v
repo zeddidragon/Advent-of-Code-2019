@@ -5,7 +5,7 @@ import grid
 import imath
 
 fn draw_game(mem []i64, destroy_blocks int) int {
-  mut tiles := map[string]byte
+  mut tiles := map[string]int
   mut machine := intcode.new(mem)
   mut max_x := 0
   mut max_y := 0
@@ -34,36 +34,17 @@ fn draw_game(mem []i64, destroy_blocks int) int {
           4 { ball_x = x }
           else { }
         }
-        if pretty {
-          tiles['$x,$y'] = match tile {
-            0 { `.` }
-            1 { `M` }
-            2 { `#` }
-            3 { `_` }
-            4 { `o` }
-            else { `?` }
-          }
-        }
+        if pretty { tiles['$x,$y'] = tile }
       }
     }
 
     if pretty {
       width := max_x + 1
       height := max_y + 1
-      mut grid_data := [` `].repeat(width * height)
-      mut idx := 0
-      for y in 0..height {
-        for x in 0..width {
-          grid_data[idx]
-          key := '$x,$y'
-          if key in tiles {
-            tile := tiles[key]
-            grid_data[idx] = tile
-          }
-          idx++
-        }
-      }
-      println('$score\n${grid.new(grid_data, width)}')
+      grid := grid.from_map(tiles, max_x + 1, max_y + 1, [
+        '.', '█', '#', '=', 'o',
+      ])
+      println('$score\n$grid')
     }
 
     if destroy_blocks >= 0 {
