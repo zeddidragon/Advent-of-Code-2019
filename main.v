@@ -11,6 +11,7 @@ fn run(day int, op fn()) {
     print(term.underline(term.green('Day $day:')))
     op()
     println(term.dim('\t${time.ticks() - before}ms'))
+    if flags.has('pretty') { sleep(1) }
   }
 }
 

@@ -41,9 +41,8 @@ fn draw_game(mem []i64, destroy_blocks int) int {
     if pretty {
       grid := grid.from_map(tiles, max_x + 1, max_y + 1, [
         '.', '█', '#', '=', 'o',
-      ])
-      ctrl_up := '\x1b[${grid.height + 3}A'
-      print('\n$score\n$grid\n$ctrl_up')
+      ]).and_return(2)
+      print('\n$score\n$grid')
     }
 
     if destroy_blocks >= 0 {

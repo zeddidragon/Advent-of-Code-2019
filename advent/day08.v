@@ -1,6 +1,7 @@
 module advent
 import os
 import grid
+import time
 
 pub fn day08() {
   f := os.read_file('input/input08') or { panic(err) }
@@ -23,6 +24,7 @@ pub fn day08() {
   print('\t${best[1] * best[2]}')
 
   // Part 2: Compose layers
+  pretty := '-pretty' in os.args
   mut picture := [2].repeat(width * height)
   for p in 0..pages {
     range := pixels[(p * page)..((p + 1) * page)]
@@ -31,10 +33,15 @@ pub fn day08() {
         picture[i] = pixel
       }
     }
+    if pretty {
+      message := grid.new(picture, width, ['.', '█', ' '])
+      print('\n${message.and_return(1)}')
+      time.sleep_ms(16)
+    }
   }
 
   message := grid.new(picture, width, ['.', '█', ' '])
-  if '-pretty' in os.args { println('\n$message') }
+  if pretty { println(message.pass(0)) }
   print('\t${message.text()}')
 }
 

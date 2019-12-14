@@ -194,6 +194,15 @@ pub fn (g Grid) str() string {
   return result
 }
 
+pub fn (g Grid) and_return(extra int) string {
+  ctrl_up := '\x1b[${g.height + extra}A'
+  return '${g.str()}$ctrl_up'
+}
+
+pub fn (g Grid) pass(extra int) string {
+  return '\n'.repeat(g.height + extra)
+}
+
 pub fn (g Grid) pos_at_idx(idx int) dim2.Vec {
   return dim2.Vec { idx % g.width, idx / g.height }
 }
