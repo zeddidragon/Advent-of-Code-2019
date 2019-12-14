@@ -3,9 +3,12 @@ import os
 import intcode
 import dim2
 import grid
+import time
 
 fn paint_program(mem []i64, dry_run bool) int {
   mut tiles := map[string]int
+  pretty := '-pretty' in os.args
+  if pretty && !dry_run { println('') }
   if !dry_run {
     tiles['0,0'] = 1
   }
@@ -14,6 +17,10 @@ fn paint_program(mem []i64, dry_run bool) int {
   mut dir := dim2.Vec {0, -1}
   mut painted := []dim2.Vec
   turn_dirs := [`L`, `R`]
+  mut min_x := 0
+  mut min_y := 0
+  mut max_x := 0
+  mut max_y := 0
   for {
     key := pos.key()
     machine.feed(i64(tiles[key]))
@@ -22,6 +29,20 @@ fn paint_program(mem []i64, dry_run bool) int {
     if paint_code.state == .done { break }
     if !(key in tiles) { painted << pos }
     tiles[key] = int(paint_code.value)
+    if pos.x < min_x { min_x = pos.x }
+    if pos.y < min_y { min_y = pos.y }
+    if pos.x > max_x { max_x = pos.x }
+    if pos.y > max_y { max_y = pos.y }
+
+    if pretty && !dry_run{
+      width := max_x - min_x + 1
+      height := max_y - min_y + 1
+      mut painting := grid.from_map(tiles, width, height, ['.', '█', '@'])
+      idx := painting.idx_at_pos(pos - dim2.Vec { min_x, min_y })
+      painting.data[idx] = 2
+      print(painting.and_return(0))
+      time.sleep_ms(30)
+    }
 
     turn_code := machine.run() or { panic(err) }
     if turn_code.state == .done { break }
@@ -30,22 +51,11 @@ fn paint_program(mem []i64, dry_run bool) int {
     pos = pos + dir
   }
 
-  mut min_x := 0
-  mut min_y := 0
-  mut max_x := 0
-  mut max_y := 0
-  for p in painted {
-    if p.x < min_x { min_x = p.x }
-    if p.y < min_y { min_y = p.y }
-    if p.x > max_x { max_x = p.x }
-    if p.y > max_y { max_y = p.y }
-  }
-
   if !dry_run {
     width := max_x - min_x + 1
     height := max_y - min_y + 1
     painting := grid.from_map(tiles, width, height, ['.', '█'])
-    if '-pretty' in os.args { println('\n$painting') }
+    if pretty { print(painting.pass(0)) }
     print('\t${painting.text()}')
   }
 
