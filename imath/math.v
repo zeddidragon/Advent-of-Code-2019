@@ -37,6 +37,34 @@ pub fn largest_factor(a int, b int) int {
   return 1
 }
 
+pub fn primes_until(limit i64) []i64 {
+  mut primes := []i64
+  mut num := i64(2)
+  for num <= limit {
+    mut is_prime := true
+    for prime in primes {
+      if is_factor64(num, prime) {
+        is_prime = false
+        break
+      }
+    }
+    if is_prime { primes << num }
+    num++
+  }
+  return primes
+}
+
+pub fn division_count(product i64, div i64) int {
+  if div < 2 { return 0 }
+  mut dividend := product
+  mut count := 0
+  for is_factor64(dividend, div) {
+    count++
+    dividend = dividend / div
+  }
+  return count
+}
+
 pub fn divide_ceil64(v i64, div i64) i64 {
   if is_factor64(v, div) { return v / div }
   return v / div + 1

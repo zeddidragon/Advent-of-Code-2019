@@ -107,13 +107,21 @@ pub fn day12() {
   for n in counts { if i64(n) > a && i64(n) < common { b = i64(n) } }
 
   // Cheapo optimization, may not work for your purposes
-  for factor := i64(1200000000); ; factor++ {
-    product := factor * common
-    if imath.is_factor64(product, b) && imath.is_factor64(product, a) {
-      print('\t${product}')
-      break
+  primes := imath.primes_until(common / 2)
+  mut prime_counts := [0].repeat(primes.len)
+  for product in [common, a, b] {
+    for i, prime in primes {
+      divs := imath.division_count(product, prime)
+      if divs == 0 { continue }
+      prime_counts[i] = divs
     }
   }
+  mut product := i64(2) // ??? Why is 1 half the right answer?
+  for i, count in prime_counts {
+    if count < 1 { continue }
+    product *= primes[i] * i64(count)
+  }
+  print('\t$product')
 }
 
 
