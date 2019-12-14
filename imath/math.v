@@ -37,6 +37,11 @@ pub fn largest_factor(a int, b int) int {
   return 1
 }
 
+pub fn divide_ceil64(v i64, div i64) i64 {
+  if is_factor64(v, div) { return v / div }
+  return v / div + 1
+}
+
 pub fn pow(base i64, exp int) i64 {
   mut v := i64(1)
   for i := 0; i < exp; i++ {
