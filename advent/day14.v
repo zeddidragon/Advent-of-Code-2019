@@ -93,4 +93,20 @@ pub fn day14() {
   factory.consume('FUEL', 1)
   ore := factory.resources['ORE']
   print('\t$ore')
+
+  mut max_viable := i64(0)
+  mut min_fail := imath.pow(2, 40)
+  max_ore := i64(1000000000000)
+
+  for max_viable < min_fail - 1 {
+    factory = new_resource_factory(processes)
+    pivot := max_viable + (min_fail - max_viable) / 2
+    factory.consume('FUEL', pivot)
+    if factory.resources['ORE'] > max_ore {
+      min_fail = pivot
+    } else {
+      max_viable = pivot
+    }
+  }
+  print('\t$max_viable')
 }
