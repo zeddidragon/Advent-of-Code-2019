@@ -18,7 +18,7 @@ fn draw_game(mem []i64, destroy_blocks int) int {
   pretty := '-pretty' in os.args
   for{
     for {
-      mut code := machine.take(3) or { break }
+      code := machine.take(3) or { break }
       x := int(code[0])
       y := int(code[1])
       tile := int(code[2])
@@ -39,8 +39,6 @@ fn draw_game(mem []i64, destroy_blocks int) int {
     }
 
     if pretty {
-      width := max_x + 1
-      height := max_y + 1
       grid := grid.from_map(tiles, max_x + 1, max_y + 1, [
         '.', '█', '#', '=', 'o',
       ])

@@ -74,15 +74,12 @@ fn (rf mut ResourceFactory) ensure(name string, amount i64) {
 pub fn day14() {
   f := os.read_lines('input/input14') or { panic(err) }
 
-  mut resources := map[string]i64
   mut processes := map[string]ResourceProcess
-  mut resource_arr := []string
   for line in f {
     in_out := line.split(' => ')
     ins := in_out[0].split(', ')
     required := ins.map(parse_resource(it))
     out := parse_resource(in_out[1])
-    resource_arr << out.name
     processes[out.name] = ResourceProcess {
       required: required
       out: out

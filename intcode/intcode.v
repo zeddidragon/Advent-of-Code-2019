@@ -13,8 +13,8 @@ pub struct IntMachine {
     pos int
     base int
     input i64
-  pub:
     has_input bool
+  pub mut:
     mem []i64
 }
 
