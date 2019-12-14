@@ -42,12 +42,16 @@ fn draw_game(mem []i64, destroy_blocks int) int {
       grid := grid.from_map(tiles, max_x + 1, max_y + 1, [
         '.', '█', '#', '=', 'o',
       ])
-      println('\n$score\n$grid\n')
+      ctrl_up := '\x1b[${grid.height + 3}A'
+      print('\n$score\n$grid\n$ctrl_up')
     }
 
     if destroy_blocks >= 0 {
       // Have to count 1 extra for some reason??
-      if blocks < 0 { return score }
+      if blocks < 0 {
+        if pretty { println('\n'.repeat(max_y + 2)) }
+        return score
+      }
       machine.feed(imath.sign(ball_x - paddle_x))
     } else {
       return blocks
