@@ -4,10 +4,9 @@ import array
 
 pub struct Grid {
   encoding []string
-  pub:
+  pub mut:
     width int
     height int
-  mut:
     data []int
 }
 
@@ -38,22 +37,29 @@ pub fn from_lines(lines []string, encoding []string) Grid {
   }
 }
 
-pub fn from_map(data map[string]int, width int, height int, encoding []string) Grid {
-  mut grid_data := [0].repeat(width * height)
+pub fn empty(encoding []string) Grid {
+  return Grid {
+    data: [],
+    width: 0,
+    height: 0,
+    encoding: encoding,
+  }
+}
+
+pub fn (g mut Grid) read_map(data map[string]int, width int, height int) {
+  if width != g.width || height != g.height {
+    g.data = [0].repeat(width * height)
+    g.width = width
+    g.height = height
+  }
   mut idx := 0
   for y in 0..height {
     for x in 0..width {
       key := '$x,$y'
       value := data[key]
-      if value != 0 { grid_data[idx] = value }
+      if value != g.data[idx] { g.data[idx] = value }
       idx++
     }
-  }
-  return Grid {
-    data: grid_data
-    width: width
-    height: height
-    encoding: encoding
   }
 }
 
@@ -134,7 +140,7 @@ const (
     0,0,1,0,0,
     0,0,1,0,0,
   ]
-  empty = [0,0,0,0,0]
+  empty_alpha_row = [0,0,0,0,0]
 )
 
 pub fn (g Grid) text() string {
@@ -150,7 +156,7 @@ pub fn (g Grid) text() string {
       continue
     }
     if y + alpha_height > g.height { break }
-    if array.eq(g.data[idx..(idx + 5)], empty) {
+    if array.eq(g.data[idx..(idx + 5)], empty_alpha_row) {
       idx += 5
       continue
     }

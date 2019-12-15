@@ -15,6 +15,8 @@ fn draw_game(mem []i64, destroy_blocks int) int {
   mut ball_x := 0
   mut paddle_x := 0
 
+  mut screen := grid.empty(['.', '█', '#', '=', 'o'])
+
   pretty := '-pretty' in os.args
   for{
     for {
@@ -39,10 +41,8 @@ fn draw_game(mem []i64, destroy_blocks int) int {
     }
 
     if pretty {
-      grid := grid.from_map(tiles, max_x + 1, max_y + 1, [
-        '.', '█', '#', '=', 'o',
-      ]).and_return(2)
-      print('\n$score\n$grid')
+      screen.read_map(tiles, max_x + 1, max_y + 1)
+      print('\n$score\n${screen.and_return(2)}')
     }
 
     if destroy_blocks >= 0 {

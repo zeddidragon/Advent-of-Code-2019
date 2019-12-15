@@ -21,6 +21,7 @@ fn paint_program(mem []i64, dry_run bool) int {
   mut min_y := 0
   mut max_x := 0
   mut max_y := 0
+  mut painting := grid.empty(['.', '█', '@'])
   for {
     key := pos.key()
     machine.feed(i64(tiles[key]))
@@ -37,7 +38,7 @@ fn paint_program(mem []i64, dry_run bool) int {
     if pretty && !dry_run{
       width := max_x - min_x + 1
       height := max_y - min_y + 1
-      mut painting := grid.from_map(tiles, width, height, ['.', '█', '@'])
+      painting.read_map(tiles, width, height)
       idx := painting.idx_at_pos(pos - dim2.Vec { min_x, min_y })
       painting.data[idx] = 2
       print(painting.and_return(0))
@@ -54,7 +55,7 @@ fn paint_program(mem []i64, dry_run bool) int {
   if !dry_run {
     width := max_x - min_x + 1
     height := max_y - min_y + 1
-    painting := grid.from_map(tiles, width, height, ['.', '█'])
+    painting.read_map(tiles, width, height)
     if pretty { print(painting.pass(0)) }
     print('\t${painting.text()}')
   }
