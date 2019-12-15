@@ -21,7 +21,7 @@ fn paint_program(mem []i64, dry_run bool) int {
   mut max := dim2.vec(0, 0)
   mut painting := grid.empty([' ', '.', '█', '@'])
   mut cycle := 0
-  cycle_n := if dry_run { 256 } else { 1 }
+  cycle_n := if dry_run { 256 } else { 4 }
   for {
     key := pos.key()
     machine.feed(i64(tiles[key]))

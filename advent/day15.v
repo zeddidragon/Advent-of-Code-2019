@@ -3,7 +3,6 @@ import os
 import intcode
 import grid
 import dim2
-import time
 
 fn move_command(vec dim2.Vec) i64 {
   if vec.y < 0 { return 1 }
@@ -113,10 +112,8 @@ fn (robo mut RobotMaze) navigate_maze(keep_going bool) int {
       }
       maze.data[maze.idx_at_pos(robo.pos - robo.min)] = 4
       println(maze.and_return(1))
-      // if !keep_going { time.sleep_ms(8) }
     }
   }
-  if pretty { println('\n'.repeat(robo.max.y - robo.min.y + 2)) }
   return steps
 }
 
@@ -127,7 +124,6 @@ fn (robo mut RobotMaze) fill_oxygen() int {
   mut dir := dim2.vec(0, -1)
   mut maze := grid.empty([' ', '.', '█', 'O', '@', 'X'])
   pretty := '-pretty' in os.args
-  if pretty { println('') }
   for bubbles.len > 0 {
     mut new_bubbles := []dim2.Vec
     for bubble in bubbles {
@@ -149,18 +145,20 @@ fn (robo mut RobotMaze) fill_oxygen() int {
     }
     steps++
   }
-  if pretty { println('\n'.repeat(robo.max.y - robo.min.y + 2)) }
   return steps
 }
 
 pub fn day15() {
+  pretty := '-pretty' in os.args
   f := os.read_file('input/input15') or { panic(err) }
   mem_str := f.split(',')
   mem := mem_str.map(it.i64())
   mut robo := new_robot_maze(mem)
   steps := robo.navigate_maze(false)
+  if pretty { println('\n'.repeat(robo.max.y - robo.min.y + 2)) }
   print('\t$steps')
   robo.navigate_maze(true)
   o2_steps := robo.fill_oxygen() - 1
+  if pretty { println('\n'.repeat(robo.max.y - robo.min.y + 2)) }
   print('\t$o2_steps')
 }
