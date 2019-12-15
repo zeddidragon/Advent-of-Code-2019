@@ -18,8 +18,9 @@ struct RobotMaze {
   mut:
     machine intcode.IntMachine
     tiles map[string]int
-    step_map map[string]int
-    steps int
+    steps map[string]int
+    goal dim2.Vec
+    found_goal bool
     pos dim2.Vec
     dir dim2.Vec
     min dim2.Vec
@@ -28,17 +29,19 @@ struct RobotMaze {
 
 fn new_robot_maze(mem []i64) RobotMaze {
   mut tiles := map[string]int
-  mut step_map := map[string]int
+  mut steps := map[string]int
   pos := dim2.vec(0, 0)
   start := pos.key()
   tiles[start] = 1
-  step_map[start] = 0
+  steps[start] = 0
 
   return RobotMaze {
     machine: intcode.new(mem)
     tiles: tiles
-    step_map: step_map
+    steps: steps
     pos: pos
+    goal: pos
+    found_goal: false
     dir: dim2.vec(0, -1)
     min: dim2.vec(0, 0)
     max: dim2.vec(0, 0)
@@ -51,6 +54,7 @@ fn (robo mut RobotMaze) navigate_maze(keep_going bool) int {
   mut maze := grid.empty([' ', '.', '█', 'O', '@', 'X'])
   start := dim2.vec(0, 0)
   mut done := false
+  mut steps := 0
 
   for !done {
     cmd := move_command(robo.dir)
@@ -72,13 +76,13 @@ fn (robo mut RobotMaze) navigate_maze(keep_going bool) int {
         robo.dir = robo.dir.turn(`L`)
       }
       1 {
-        robo.steps++
+        steps++
         robo.pos = tile_pos
         if key in robo.tiles {
-          robo.steps = robo.step_map[key]
+          steps = robo.steps[key]
         } else {
           robo.tiles[key] = 1
-          robo.step_map[key] = robo.steps
+          robo.steps[key] = steps
         }
         right := robo.pos + robo.dir.turn(`R`)
         if robo.tiles[right.key()] != 3 { robo.dir = robo.dir.turn(`R`) }
@@ -87,8 +91,11 @@ fn (robo mut RobotMaze) navigate_maze(keep_going bool) int {
       }
       2 {
         robo.tiles[key] = 3
-        robo.steps++
+        steps++
         robo.pos = tile_pos
+        robo.goal = tile_pos
+        robo.found_goal = true
+
         if !keep_going {
           done = true
         }
@@ -98,16 +105,52 @@ fn (robo mut RobotMaze) navigate_maze(keep_going bool) int {
       }
     }
 
-    if pretty && (robo.steps % 12 == 0 || done) {
+    if pretty && (steps % 12 == 0 || done) {
       maze.read_map(robo.tiles, robo.max - robo.min + dim2.vec(1, 1), robo.min)
       maze.data[maze.idx_at_pos(start - robo.min)] = 5
+      if robo.found_goal {
+        maze.data[maze.idx_at_pos(robo.goal - robo.min)] = 3
+      }
       maze.data[maze.idx_at_pos(robo.pos - robo.min)] = 4
       println(maze.and_return(1))
       // if !keep_going { time.sleep_ms(8) }
     }
   }
   if pretty { println('\n'.repeat(robo.max.y - robo.min.y + 2)) }
-  return robo.steps
+  return steps
+}
+
+fn (robo mut RobotMaze) fill_oxygen() int {
+  mut steps := 0
+  robo.tiles[robo.goal.key()] = 3
+  mut bubbles := [robo.goal]
+  mut dir := dim2.vec(0, -1)
+  mut maze := grid.empty([' ', '.', '█', 'O', '@', 'X'])
+  pretty := '-pretty' in os.args
+  if pretty { println('') }
+  for bubbles.len > 0 {
+    mut new_bubbles := []dim2.Vec
+    for bubble in bubbles {
+      for _ in 0..4 {
+        side := bubble + dir
+        dir = dir.turn(`R`)
+        key := side.key()
+        if robo.tiles[key] == 1 {
+          new_bubbles << side
+          robo.tiles[key] = 3
+        }
+      }
+    }
+    bubbles = new_bubbles
+    if pretty {
+      maze.read_map(robo.tiles, robo.max - robo.min + dim2.vec(1, 1), robo.min)
+      println(maze.and_return(1))
+      // if !keep_going { time.sleep_ms(8) }
+    }
+    steps++
+  }
+  if pretty { println('\n'.repeat(robo.max.y - robo.min.y + 2)) }
+  return steps
 }
 
 pub fn day15() {
@@ -118,4 +161,6 @@ pub fn day15() {
   steps := robo.navigate_maze(false)
   print('\t$steps')
   robo.navigate_maze(true)
+  o2_steps := robo.fill_oxygen() - 1
+  print('\t$o2_steps')
 }
