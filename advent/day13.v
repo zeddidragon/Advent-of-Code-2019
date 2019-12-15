@@ -3,19 +3,21 @@ import os
 import intcode
 import grid
 import imath
+import dim2
 
 fn draw_game(mem []i64, destroy_blocks int) int {
   mut tiles := map[string]int
   mut machine := intcode.new(mem)
-  mut max_x := 0
-  mut max_y := 0
+  mut size := dim2.vec(1, 1)
 
   mut blocks := imath.max(0, destroy_blocks)
   mut score := 0
   mut ball_x := 0
   mut paddle_x := 0
+  mut zero := dim2.vec(0, 0)
 
   mut screen := grid.empty(['.', '█', '#', '=', 'o'])
+  mut step := 0
 
   pretty := '-pretty' in os.args
   for{
@@ -24,8 +26,8 @@ fn draw_game(mem []i64, destroy_blocks int) int {
       x := int(code[0])
       y := int(code[1])
       tile := int(code[2])
-      if x > max_x { max_x = x }
-      if y > max_y { max_y = y }
+      if x + 1 > size.x { size.x = x + 1 }
+      if y + 1 > size.y { size.y = y + 1 }
       if x == -1 && y == 0 {
         score = tile
         blocks--
@@ -40,15 +42,15 @@ fn draw_game(mem []i64, destroy_blocks int) int {
       }
     }
 
-    if pretty {
-      screen.read_map(tiles, max_x + 1, max_y + 1, 0, 0)
+    if pretty && (step++ % 12 == 0 || blocks < 0) {
+      screen.read_map(tiles, size, zero)
       print('\n$score\n${screen.and_return(2)}')
     }
 
     if destroy_blocks >= 0 {
       // Have to count 1 extra for some reason??
       if blocks < 0 {
-        if pretty { println('\n'.repeat(max_y + 2)) }
+        if pretty { println('\n'.repeat(size.y + 1)) }
         return score
       }
       machine.feed(imath.sign(ball_x - paddle_x))

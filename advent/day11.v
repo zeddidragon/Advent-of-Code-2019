@@ -17,12 +17,11 @@ fn paint_program(mem []i64, dry_run bool) int {
   mut dir := dim2.Vec {0, -1}
   mut painted := []dim2.Vec
   turn_dirs := [`L`, `R`]
-  mut min_x := 0
-  mut min_y := 0
-  mut max_x := 0
-  mut max_y := 0
+  mut min := dim2.vec(0, 0)
+  mut max := dim2.vec(0, 0)
   mut painting := grid.empty([' ', '.', '█', '@'])
   mut cycle := 0
+  cycle_n := if dry_run { 256 } else { 1 }
   for {
     key := pos.key()
     machine.feed(i64(tiles[key]))
@@ -31,17 +30,15 @@ fn paint_program(mem []i64, dry_run bool) int {
     if paint_code.state == .done { break }
     if !(key in tiles) { painted << pos }
     tiles[key] = int(paint_code.value + 1)
-    if pos.x < min_x { min_x = pos.x }
-    if pos.y < min_y { min_y = pos.y }
-    if pos.x > max_x { max_x = pos.x }
-    if pos.y > max_y { max_y = pos.y }
+    if pos.x < min.x { min.x = pos.x }
+    if pos.y < min.y { min.y = pos.y }
+    if pos.x > max.x { max.x = pos.x }
+    if pos.y > max.y { max.y = pos.y }
 
-    if pretty && (!dry_run || cycle % 64 == 0) {
-      width := max_x - min_x + 1
-      height := max_y - min_y + 1
-      offset := dim2.vec(min_x, min_y)
-      painting.read_map(tiles, width, height, min_x, min_y)
-      idx := painting.idx_at_pos(pos - offset)
+    if pretty && cycle % cycle_n == 0 {
+      size := max - min + dim2.vec(1, 1)
+      painting.read_map(tiles, size, min)
+      idx := painting.idx_at_pos(pos - min)
       painting.data[idx] = 3
       print(painting.and_return(0))
       if !dry_run { time.sleep_ms(30) }
@@ -55,12 +52,13 @@ fn paint_program(mem []i64, dry_run bool) int {
     cycle++
   }
 
-  if pretty { print(painting.pass(0)) }
   if !dry_run {
-    width := max_x - min_x + 1
-    height := max_y - min_y + 1
-    offset := dim2.vec(min_x, min_y)
-    painting.read_map(tiles, width, height, min_x, min_y)
+    size := max - min + dim2.vec(1, 1)
+    painting.read_map(tiles, size, min)
+    if pretty {
+      print(painting.and_return(0))
+      print(painting.pass(1))
+    }
     print('\t${painting.text()}')
   }
 

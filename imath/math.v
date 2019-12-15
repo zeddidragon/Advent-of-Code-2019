@@ -10,6 +10,11 @@ pub fn max(a int, b int) int {
   return b
 }
 
+pub fn max64(a i64, b i64) i64 {
+  if a > b { return a }
+  return b
+}
+
 pub fn abs(a int) int {
   if a < 0 { return -a }
   return a
