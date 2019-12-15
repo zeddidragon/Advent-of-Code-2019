@@ -52,13 +52,13 @@ fn paint_program(mem []i64, dry_run bool) int {
     cycle++
   }
 
+  if pretty {
+    print(painting.pass(0))
+  }
   if !dry_run {
     size := max - min + dim2.vec(1, 1)
     painting.read_map(tiles, size, min)
-    if pretty {
-      print(painting.and_return(0))
-      print(painting.pass(1))
-    }
+    painting.collapse([1, 2])
     print('\t${painting.text()}')
   }
 

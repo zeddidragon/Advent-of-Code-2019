@@ -14,7 +14,7 @@ pub struct IntMachine {
     base int
     input i64
     has_input bool
-  pub:
+  pub mut:
     mem []i64
 }
 

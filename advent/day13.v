@@ -14,7 +14,7 @@ fn draw_game(mem []i64, destroy_blocks int) int {
   mut score := 0
   mut ball_x := 0
   mut paddle_x := 0
-  mut zero := dim2.vec(0, 0)
+  zero := dim2.vec(0, 0)
 
   mut screen := grid.empty(['.', '█', '#', '=', 'o'])
   mut step := 0

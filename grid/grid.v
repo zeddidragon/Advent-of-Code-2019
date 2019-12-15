@@ -193,6 +193,14 @@ pub fn (g Grid) text() string {
   return text
 }
 
+pub fn (g mut Grid) collapse(mapping []int) {
+  for idx, n in g.data {
+    mapped := mapping.index(n)
+    if mapped < 0 { continue }
+    g.data[idx] = mapped
+  }
+}
+
 pub fn (g Grid) str() string {
   mut result := ''
   for i, c in g.data {
