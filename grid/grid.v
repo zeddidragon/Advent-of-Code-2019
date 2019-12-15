@@ -46,7 +46,13 @@ pub fn empty(encoding []string) Grid {
   }
 }
 
-pub fn (g mut Grid) read_map(data map[string]int, width int, height int) {
+pub fn (g mut Grid) read_map(
+  data map[string]int,
+  width int,
+  height int,
+  off_x int,
+  off_y int
+) {
   if width != g.width || height != g.height {
     g.data = [0].repeat(width * height)
     g.width = width
@@ -55,7 +61,7 @@ pub fn (g mut Grid) read_map(data map[string]int, width int, height int) {
   mut idx := 0
   for y in 0..height {
     for x in 0..width {
-      key := '$x,$y'
+      key := '${x + off_x},${y + off_y}'
       value := data[key]
       if value != g.data[idx] { g.data[idx] = value }
       idx++

@@ -28,6 +28,10 @@ pub struct Vec {
     y int
 }
 
+pub fn vec(x int, y int) Vec {
+  return Vec { x, y }
+}
+
 pub fn (p Vec) copy() Vec {
   return Vec { p.x, p.y }
 }

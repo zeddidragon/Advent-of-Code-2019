@@ -41,7 +41,7 @@ fn draw_game(mem []i64, destroy_blocks int) int {
     }
 
     if pretty {
-      screen.read_map(tiles, max_x + 1, max_y + 1)
+      screen.read_map(tiles, max_x + 1, max_y + 1, 0, 0)
       print('\n$score\n${screen.and_return(2)}')
     }
 

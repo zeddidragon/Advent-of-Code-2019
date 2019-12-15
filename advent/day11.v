@@ -8,7 +8,7 @@ import time
 fn paint_program(mem []i64, dry_run bool) int {
   mut tiles := map[string]int
   pretty := '-pretty' in os.args
-  if pretty && !dry_run { println('') }
+  if pretty { println('') }
   if !dry_run {
     tiles['0,0'] = 1
   }
@@ -21,7 +21,8 @@ fn paint_program(mem []i64, dry_run bool) int {
   mut min_y := 0
   mut max_x := 0
   mut max_y := 0
-  mut painting := grid.empty(['.', '█', '@'])
+  mut painting := grid.empty([' ', '.', '█', '@'])
+  mut cycle := 0
   for {
     key := pos.key()
     machine.feed(i64(tiles[key]))
@@ -29,20 +30,21 @@ fn paint_program(mem []i64, dry_run bool) int {
     paint_code := machine.run() or { panic(err) }
     if paint_code.state == .done { break }
     if !(key in tiles) { painted << pos }
-    tiles[key] = int(paint_code.value)
+    tiles[key] = int(paint_code.value + 1)
     if pos.x < min_x { min_x = pos.x }
     if pos.y < min_y { min_y = pos.y }
     if pos.x > max_x { max_x = pos.x }
     if pos.y > max_y { max_y = pos.y }
 
-    if pretty && !dry_run{
+    if pretty && (!dry_run || cycle % 64 == 0) {
       width := max_x - min_x + 1
       height := max_y - min_y + 1
-      painting.read_map(tiles, width, height)
-      idx := painting.idx_at_pos(pos - dim2.Vec { min_x, min_y })
-      painting.data[idx] = 2
+      offset := dim2.vec(min_x, min_y)
+      painting.read_map(tiles, width, height, min_x, min_y)
+      idx := painting.idx_at_pos(pos - offset)
+      painting.data[idx] = 3
       print(painting.and_return(0))
-      time.sleep_ms(30)
+      if !dry_run { time.sleep_ms(30) }
     }
 
     turn_code := machine.run() or { panic(err) }
@@ -50,13 +52,15 @@ fn paint_program(mem []i64, dry_run bool) int {
     turn_dir := turn_dirs[int(turn_code.value)]
     dir = dir.turn(turn_dir)
     pos = pos + dir
+    cycle++
   }
 
+  if pretty { print(painting.pass(0)) }
   if !dry_run {
     width := max_x - min_x + 1
     height := max_y - min_y + 1
-    painting.read_map(tiles, width, height)
-    if pretty { print(painting.pass(0)) }
+    offset := dim2.vec(min_x, min_y)
+    painting.read_map(tiles, width, height, min_x, min_y)
     print('\t${painting.text()}')
   }
 
