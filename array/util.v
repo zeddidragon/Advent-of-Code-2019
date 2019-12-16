@@ -11,3 +11,9 @@ pub fn eq(a []int, b []int) bool {
   }
   return true
 }
+
+pub fn arr_str(arr []int, sep string) string {
+  mut ret := ''
+  for n in arr { ret += '$n$sep' }
+  return ret
+}
