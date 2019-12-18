@@ -204,7 +204,13 @@ pub fn (g mut Grid) collapse(mapping []int) {
 pub fn (g Grid) str() string {
   mut result := ''
   for i, c in g.data {
-    result += g.encoding[c]
+    if c >= 110 {
+      result += (`A` + ((c - 110) % 10)).str()
+    } else if c >= 100 {
+      result += (c - 100).str()
+    } else {
+      result += g.encoding[c]
+    }
     if i % g.width == g.width - 1 { result += '\n' }
   }
   return result
@@ -225,4 +231,11 @@ pub fn (g Grid) pos_at_idx(idx int) dim2.Vec {
 
 pub fn (g Grid) idx_at_pos(pos dim2.Vec) int {
   return pos.x + pos.y * g.width
+}
+
+pub fn (g Grid) tile_at_pos(pos dim2.Vec) int {
+  if pos.x < 0 || pos.y < 0 || pos.x >= g.width || pos.y >= g.height {
+    return -1
+  }
+  return g.data[g.idx_at_pos(pos)]
 }

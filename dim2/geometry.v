@@ -54,6 +54,14 @@ pub fn (p Vec) move(dir byte, dist int) Vec {
   }
 }
 
+pub fn (p Vec) dir_char() byte {
+  if p.x < 0 { return `L` }
+  if p.x > 0 { return `R` }
+  if p.y < 0 { return `U` }
+  if p.y > 0 { return `D` }
+  return `?`
+}
+
 pub fn (p Vec) turn(dir byte) Vec {
   return match dir {
     `L` { Vec { p.y, -p.x } }

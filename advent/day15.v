@@ -104,7 +104,7 @@ fn (robo mut RobotMaze) navigate_maze(keep_going bool) int {
       }
     }
 
-    if pretty && (steps % 12 == 0 || done) {
+    if pretty && (steps % 8 == 0 || done) {
       maze.read_map(robo.tiles, robo.max - robo.min + dim2.vec(1, 1), robo.min)
       maze.data[maze.idx_at_pos(start - robo.min)] = 5
       if robo.found_goal {
@@ -138,7 +138,7 @@ fn (robo mut RobotMaze) fill_oxygen() int {
       }
     }
     bubbles = new_bubbles
-    if pretty && (steps % 12 == 0 || new_bubbles.len == 0) {
+    if pretty && (steps % 8 == 0 || new_bubbles.len == 0) {
       maze.read_map(robo.tiles, robo.max - robo.min + dim2.vec(1, 1), robo.min)
       println(maze.and_return(1))
       // if !keep_going { time.sleep_ms(8) }

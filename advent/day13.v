@@ -42,7 +42,7 @@ fn draw_game(mem []i64, destroy_blocks int) int {
       }
     }
 
-    if pretty && (step++ % 12 == 0 || blocks < 0) {
+    if pretty && (step++ % 8 == 0 || blocks < 0) {
       screen.read_map(tiles, size, zero)
       print('\n$score\n${screen.and_return(2)}')
     }
