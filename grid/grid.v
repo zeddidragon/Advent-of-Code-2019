@@ -26,7 +26,12 @@ pub fn from_lines(lines []string, encoding []string) Grid {
   for j, line in lines {
     for i, c in line.split('') {
       idx := i + j * width
-      data[idx] = encoding.index(c)
+      enc_idx := encoding.index(c)
+      if enc_idx < 0 {
+        data[idx] = int(c[0])
+      } else {
+        data[idx] = enc_idx
+      }
     }
   }
   return Grid {
@@ -43,6 +48,15 @@ pub fn empty(encoding []string) Grid {
     width: 0,
     height: 0,
     encoding: encoding,
+  }
+}
+
+pub fn (g Grid) clone() Grid {
+  return Grid {
+    data: array.clone(g.data)
+    width: g.width
+    height: g.height
+    encoding: g.encoding
   }
 }
 
@@ -204,10 +218,12 @@ pub fn (g mut Grid) collapse(mapping []int) {
 pub fn (g Grid) str() string {
   mut result := ''
   for i, c in g.data {
-    if c >= 110 {
-      result += (`A` + ((c - 110) % 10)).str()
-    } else if c >= 100 {
-      result += (c - 100).str()
+    if c >= 1010 {
+      result += (`A` + ((c - 1010) % 10)).str()
+    } else if c >= 1000 {
+      result += (c - 1000).str()
+    } else if c >= g.encoding.len {
+      result += byte(c).str()
     } else {
       result += g.encoding[c]
     }

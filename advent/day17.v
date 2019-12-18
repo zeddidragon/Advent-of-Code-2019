@@ -3,7 +3,7 @@ import os
 import intcode
 import grid
 import dim2
-import array
+
 
 fn read_ascii_feed(machine mut intcode.IntMachine, feed mut grid.Grid) {
   mut idx := 0
@@ -165,7 +165,7 @@ pub fn day17() {
 
     if steps > 0 {
       robo = robo + robo_dir
-      feed.data[feed.idx_at_pos(robo)] = 100 + steps
+      feed.data[feed.idx_at_pos(robo)] = 1000 + steps
       continue
     }
 

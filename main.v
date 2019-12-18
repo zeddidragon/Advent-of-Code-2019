@@ -33,4 +33,5 @@ fn main() {
   run(15, advent.day15)
   run(16, advent.day16)
   run(17, advent.day17)
+  run(18, advent.day18)
 }
