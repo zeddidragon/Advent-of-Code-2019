@@ -105,6 +105,7 @@ fn fastest_crawl(kds []KeyDistance) int {
   for {
     sort_options(mut options)
     println(options)
+    break
     choice := options.first()
     if choice.options.len == 0 { return choice.steps }
     options.delete(0)
@@ -148,8 +149,9 @@ fn fastest_dungeon_crawl(dungeon grid.Grid) int {
             new_kd.lock(c)
           }
           if c >= `a` && c <= `z` {
-            key_distances << new_kd
-            new_kd = new_kd.clone()
+            mut to_kd := new_kd.clone()
+            to_kd.to = c
+            key_distances << to_kd
             new_kd.lock(c - 32)
           }
           new_explored << new_kd
@@ -160,10 +162,7 @@ fn fastest_dungeon_crawl(dungeon grid.Grid) int {
     }
   }
 
-  println('')
-  println(keys)
-  return 0
-  // return fastest_crawl(key_distances)
+  return fastest_crawl(key_distances)
 }
 
 pub fn day18() {
