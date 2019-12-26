@@ -1,6 +1,7 @@
 module advent
 import os
 import grid
+import array
 
 
 const (
@@ -16,6 +17,21 @@ struct KeyDistance {
     steps int
 }
 
+fn (kd KeyDistance) clone() KeyDistance {
+  return KeyDistance {
+    pos: kd.pos
+    from: kd.from
+    to: kd.from
+    doors: array.byte_clone(kd.doors)
+    steps: kd.steps
+  }
+}
+
+fn (kd mut KeyDistance) lock(key byte) {
+  if key in kd.doors { return }
+  kd.doors << key
+}
+
 pub fn (kd KeyDistance) str() string {
   mut ret := '${kd.from.str()} ='
   for door in kd.doors {
@@ -28,94 +44,124 @@ pub fn (kd KeyDistance) str() string {
   return '$ret> ${kd.to.str()} ($kd.steps)'
 }
 
-fn (kd KeyDistance) clone() KeyDistance {
-  return KeyDistance {
-    pos: kd.pos,
-    from: kd.from,
-    to: kd.to,
-    doors: kd.doors.clone(),
-    steps: kd.steps,
-  }
+struct DungeonCrawl {
+  mut:
+    paths []KeyDistance
+    at byte
+    unlocked []byte
+    terminals []byte
+    steps int
+    failed bool
 }
 
-fn (kd mut KeyDistance) unlock(key byte) {
-  door_idx := kd.doors.index(key - 32)
-  if door_idx >= 0 { kd.doors.delete(door_idx) }
-}
-
-fn (kd mut KeyDistance) lock(door byte) {
-  if door in kd.doors { return }
-  kd.doors << door
-}
-
-struct MazePath {
-  steps int
-  from byte
-  options []KeyDistance
-}
-
-pub fn (kd MazePath) str() string {
-  return 'from ${kd.from.str()} ($kd.steps)'
-}
-
-fn options_for_key(kds []KeyDistance, key byte, steps int) []MazePath {
-  mut ret := []MazePath
-  mut froms := []KeyDistance
-  mut new_kds := []KeyDistance
-  for kd in kds {
-    mut new_kd := kd.clone()
-    new_kd.unlock(key)
-    if new_kd.from == key && new_kd.doors.len == 0 {
-      froms << new_kd
-    } else if new_kd.from != key {
-      new_kds << new_kd
+fn (crawl mut DungeonCrawl) move(key byte) {
+  for path in crawl.paths {
+    if path.from == crawl.at && path.to == key {
+      crawl.unlocked << [key, key - 0x20]
+      crawl.at = key
+      crawl.steps += path.steps
+      return
     }
   }
-
-  for from in froms {
-    ret << MazePath {
-      steps: steps + from.steps
-      from: from.to
-      options: new_kds
-    }
-  }
-  return ret
 }
 
-fn sort_options(paths mut []MazePath) {
-  if paths.len < 1 { return }
+fn (crawl DungeonCrawl) check(key byte) DungeonCrawl {
+  mut new_crawl := DungeonCrawl {
+    paths: crawl.paths
+    at: crawl.at
+    unlocked: array.byte_clone(crawl.unlocked)
+    terminals: array.byte_clone(crawl.terminals)
+    steps: crawl.steps
+    failed: false
+  }
 
-  // Bubble sort, not optimal at all
-  mut sorted := false
-  for !sorted {
-    sorted = true
-    for i, a in paths[1..] {
-      b := paths[i] // i for first element is 0
-      if a.steps < b.steps {
-        sorted = false
-        paths[i] = a
-        paths[i + 1] = b
+  fr := new_crawl.at.str()
+  to := key.str()
+  for path in new_crawl.paths {
+    if path.from != new_crawl.at || path.to != key { continue }
+    for door in path.doors {
+      if door in new_crawl.unlocked { continue }
+      if door in new_crawl.terminals {
+        new_crawl.failed = true
+        new_crawl.steps = int_max
+        return new_crawl
+      }
+      if door >= `a` && door <= `z` {
+        new_crawl.move(door)
+        return new_crawl.check(key)
+      } else {
+        new_crawl = new_crawl.check(door + 0x20)
+        return new_crawl.check(key)
       }
     }
+
+    idx := new_crawl.terminals.index(key)
+    if idx >= 0 { new_crawl.terminals.delete(idx) }
+    new_crawl.unlocked << [key, key - 0x20]
+    new_crawl.steps += path.steps
+    new_crawl.at = key
+    return new_crawl
   }
+
+
+  new_crawl.failed = true
+  return new_crawl
 }
 
-fn fastest_crawl(kds []KeyDistance) int {
-  mut options := options_for_key(kds, `@`, 0)
-  for {
-    sort_options(mut options)
-    println(options)
-    break
-    choice := options.first()
-    if choice.options.len == 0 { return choice.steps }
-    options.delete(0)
-    options << options_for_key(choice.options, choice.from, choice.steps)
+fn (crawl DungeonCrawl) best_crawl() DungeonCrawl {
+  mut best := DungeonCrawl { steps: int_max }
+  if crawl.failed { return best }
+  if crawl.terminals.len == 0 { return crawl }
+
+  for t in crawl.terminals {
+    mut iter := crawl.check(t)
+    if iter.failed { continue }
+    iter = iter.best_crawl()
+    if iter.steps < best.steps { best = iter }
   }
-  return 0
+  return best
 }
 
-fn fastest_dungeon_crawl(dungeon grid.Grid) int {
-  mut keys := [`@`]
+fn dungeon_key_distances(dungeon grid.Grid, key byte) []KeyDistance {
+  mut distances := []KeyDistance
+  mut dng := dungeon.clone()
+  pos := dng.data.index(int(key))
+  dng.data[pos] = 1
+  mut explored := [KeyDistance {
+    pos: pos
+    from: key
+  }]
+
+  for explored.len > 0 {
+    mut new_explored := []KeyDistance
+    for ex in explored {
+      idx := ex.pos
+      for n_idx in [idx - dng.width, idx - 1, idx + 1, idx + dng.width] {
+        c := byte(dng.data[n_idx])
+        if c == 1 { continue }
+        mut new_kd := ex.clone()
+        new_kd.pos = n_idx
+        new_kd.steps++
+        if c >= `A` && c <= `Z` {
+          new_kd.lock(c)
+        }
+        if c >= `a` && c <= `z` {
+          mut to_kd := new_kd.clone()
+          to_kd.to = c
+          distances << to_kd
+          new_kd.lock(c)
+        }
+        new_explored << new_kd
+        dng.data[n_idx] = 1
+      }
+    }
+    explored = new_explored
+  }
+  return distances
+}
+
+fn fastest_dungeon_crawl(dungeon grid.Grid) DungeonCrawl {
+  mut keys := []byte
   for c in dungeon.data {
     char := byte(c)
     if char >= `a` && char <= `z` {
@@ -123,53 +169,46 @@ fn fastest_dungeon_crawl(dungeon grid.Grid) int {
     }
   }
 
-  mut key_distances := []KeyDistance
-  for key in keys {
-    mut dng := dungeon.clone()
-    pos := dng.data.index(int(key))
-    dng.data[pos] = 1
-    mut explored := [KeyDistance {
-      pos: pos
-      from: key
-      to: 0
-      doors: []
-      steps: 0
-    }]
-    for explored.len > 0 {
-      mut new_explored := []KeyDistance
-      for ex in explored {
-        idx := ex.pos
-        for n_idx in [idx - dng.width, idx - 1, idx + 1, idx + dng.width] {
-          c := byte(dng.data[n_idx])
-          if c == 1 { continue }
-          mut new_kd := ex.clone()
-          new_kd.pos = n_idx
-          new_kd.steps++
-          if c >= `A` && c <= `Z` {
-            new_kd.lock(c)
-          }
-          if c >= `a` && c <= `z` {
-            mut to_kd := new_kd.clone()
-            to_kd.to = c
-            key_distances << to_kd
-            new_kd.lock(c - 32)
-          }
-          new_explored << new_kd
-          dng.data[n_idx] = 1
-        }
-      }
-      explored = new_explored
+  mut paths := dungeon_key_distances(dungeon, `@`)
+  println(paths)
+  mut terminals := keys.clone()
+  for path in paths {
+    for door in path.doors {
+      key_idx := terminals.index(door)
+      if key_idx >= 0 { terminals.delete(key_idx) }
     }
   }
+  for key in keys {
+    paths << dungeon_key_distances(dungeon, key)
+  }
 
-  return fastest_crawl(key_distances)
+  crawl := DungeonCrawl {
+    paths: paths
+    at: `@`
+    terminals: terminals
+  }
+
+  return crawl.best_crawl()
 }
 
 pub fn day18() {
   f := os.read_lines('input/input18-test') or { panic(err) }
   mut dungeon := grid.from_lines(f, ['.', '#'])
 
-  println('')
   best := fastest_dungeon_crawl(dungeon)
-  println('\t$best')
+  println(best.unlocked)
+  println('\t$best.steps')
+  mut from := `@`
+  mut total := 0
+  for door in best.unlocked {
+    for path in best.paths {
+      if path.from == from && path.to == door {
+        println('${from.str()} => ${door.str()} ($path.steps)')
+        from = door
+        total += path.steps
+        break
+      }
+    }
+  }
+  println(total)
 }
