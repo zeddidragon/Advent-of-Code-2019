@@ -201,11 +201,12 @@ pub fn day17() {
   machine.feed_ascii(b)
   machine.feed_ascii(c)
   if pretty {
-    machine.feed_ascii('y\n')
+    machine.feed_ascii('y')
   } else {
-    machine.feed_ascii('n\n')
+    machine.feed_ascii('n')
   }
 
+  machine.feed(10)
   for {
     if pretty {
       read_ascii_feed(mut machine, mut feed)
