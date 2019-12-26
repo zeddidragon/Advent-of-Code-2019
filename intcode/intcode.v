@@ -40,6 +40,16 @@ pub fn (m mut IntMachine) feed(input i64) {
   m.has_input = true
 }
 
+pub fn (m mut intcode.IntMachine) feed_ascii(input string) {
+  for n in input {
+    m.feed(i64(n))
+    for {
+      result := m.run() or { panic(err) }
+      if result.state == .await { break }
+    }
+  }
+}
+
 fn (m IntMachine) arg(n int) i64 {
   op := m.mem[m.pos]
   idx := m.pos + n + 1

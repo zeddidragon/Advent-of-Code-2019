@@ -41,16 +41,6 @@ fn read_ascii_feed(machine mut intcode.IntMachine, feed mut grid.Grid) {
   }
 }
 
-fn feed_ascii(m mut intcode.IntMachine, input string) {
-  for n in input {
-    m.feed(i64(n))
-    for {
-      result := m.run() or { panic(err) }
-      if result.state == .await { break }
-    }
-  }
-}
-
 fn print_ascii_moves(moves []int) {
   for move in moves {
     if move == -1 {
@@ -206,17 +196,16 @@ pub fn day17() {
 
   machine = intcode.new(mem)
   machine.mem[0] = 2
-  feed_ascii(mut machine, main)
-  feed_ascii(mut machine, a)
-  feed_ascii(mut machine, b)
-  feed_ascii(mut machine, c)
+  machine.feed_ascii(main)
+  machine.feed_ascii(a)
+  machine.feed_ascii(b)
+  machine.feed_ascii(c)
   if pretty {
-    feed_ascii(mut machine, 'y')
+    machine.feed_ascii('y\n')
   } else {
-    feed_ascii(mut machine, 'n')
+    machine.feed_ascii('n\n')
   }
 
-  machine.feed(i64(`\n`))
   for {
     if pretty {
       read_ascii_feed(mut machine, mut feed)
