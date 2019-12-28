@@ -153,7 +153,13 @@ fn fastest_dungeon_crawl(dungeon grid.Grid) DungeonCrawl {
   }
 
   mut starts := dungeon_key_distances(dungeon, `@`)
-  mut terminals := keys.clone()
+  mut terminals := []byte
+  for c in dungeon.data {
+    char := byte(c)
+    if (char >= `a` && char <= `z`) || (char >= `A` && char <= `Z`) {
+      terminals << char
+    }
+  }
 
   // First determine all possible paths in maze
   for i, path in starts {
@@ -169,9 +175,12 @@ fn fastest_dungeon_crawl(dungeon grid.Grid) DungeonCrawl {
   // 2. The door unlocked by any given key
   // 3. The first key in all other paths from each path's terminal
   // This will lead to some duplicates, which is not a big deal
+  println(keys)
+  println(terminals)
   mut paths := []KeyDistance
   for t in terminals {
     mut path := find_key_distance(starts, `@`, t) or { panic(err) }
+    println(path)
 
     mut current := `@`
     mut nexts := starts
@@ -206,6 +215,10 @@ fn fastest_dungeon_crawl(dungeon grid.Grid) DungeonCrawl {
     }
   }
 
+  // TODO: Prune terminals that are empty doors
+
+  // for path in paths { println(path) }
+
   crawl := DungeonCrawl {
     paths: paths
     at: `@`
@@ -219,18 +232,20 @@ fn run_day18(filename string) int {
   mut dungeon := grid.from_lines(f, ['.', '#'])
 
   best := fastest_dungeon_crawl(dungeon)
+  println(best.unlocked)
   return best.steps
 }
 
 pub fn day18() {
-  println(run_day18('input/input18-test1'))
-  println('Expected: 8')
-  println(run_day18('input/input18-test2'))
-  println('Expected: 86')
-  println(run_day18('input/input18-test3'))
-  println('Expected: 132')
-  println(run_day18('input/input18-test4'))
-  println('Expected: 136')
-  println(run_day18('input/input18-test5'))
-  println('Expected: 81')
+  // println(run_day18('input/input18-test1'))
+  // println('Expected: 8')
+  // println(run_day18('input/input18-test2'))
+  // println('Expected: 86')
+  // println(run_day18('input/input18-test3'))
+  // println('Expected: 132')
+  // println(run_day18('input/input18-test4'))
+  // println('Expected: 136')
+  // println(run_day18('input/input18-test5'))
+  // println('Expected: 81')
+  println(run_day18('input/input18'))
 }
