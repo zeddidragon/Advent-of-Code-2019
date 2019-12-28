@@ -77,6 +77,7 @@ fn (crawl DungeonCrawl) check(key byte) DungeonCrawl {
 
   fr := new_crawl.at.str()
   to := key.str()
+  mut unlocked_later := []byte
   for path in new_crawl.paths {
     if path.from != new_crawl.at || path.to != key { continue }
     for door in path.doors {
@@ -87,8 +88,7 @@ fn (crawl DungeonCrawl) check(key byte) DungeonCrawl {
         return new_crawl
       }
       if door >= `a` && door <= `z` {
-        new_crawl.move(door)
-        return new_crawl.check(key)
+        unlocked_later << door
       } else {
         new_crawl = new_crawl.check(door + 0x20)
         return new_crawl.check(key)
@@ -103,6 +103,11 @@ fn (crawl DungeonCrawl) check(key byte) DungeonCrawl {
     return new_crawl
   }
 
+  for key in unlocked_later {
+    if !key in new_crawl.unlocked {
+      new_crawl.unlocked << key
+    }
+  }
 
   new_crawl.failed = true
   return new_crawl
@@ -170,7 +175,6 @@ fn fastest_dungeon_crawl(dungeon grid.Grid) DungeonCrawl {
   }
 
   mut paths := dungeon_key_distances(dungeon, `@`)
-  println(paths)
   mut terminals := keys.clone()
   for path in paths {
     for door in path.doors {
@@ -191,12 +195,11 @@ fn fastest_dungeon_crawl(dungeon grid.Grid) DungeonCrawl {
   return crawl.best_crawl()
 }
 
-pub fn day18() {
-  f := os.read_lines('input/input18-test') or { panic(err) }
+fn run_day18(filename string) int {
+  f := os.read_lines(filename) or { panic(err) }
   mut dungeon := grid.from_lines(f, ['.', '#'])
 
   best := fastest_dungeon_crawl(dungeon)
-  println(best.unlocked)
   println('\t$best.steps')
   mut from := `@`
   mut total := 0
@@ -210,5 +213,19 @@ pub fn day18() {
       }
     }
   }
-  println(total)
+
+  return total
+}
+
+pub fn day18() {
+  println(run_day18('input/input18-test1'))
+  println('Expected: 8')
+  println(run_day18('input/input18-test2'))
+  println('Expected: 86')
+  println(run_day18('input/input18-test3'))
+  println('Expected: 132')
+  println(run_day18('input/input18-test4'))
+  println('Expected: 136')
+  println(run_day18('input/input18-test5'))
+  println('Expected: 81')
 }

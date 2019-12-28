@@ -215,7 +215,7 @@ pub fn day17() {
     result := machine.run() or { panic(err )}
     if result.value > 200 {
       if pretty { print(feed.pass(0)) }
-      println('\t$result.value')
+      print('\t$result.value')
       break
     }
     if result.state == .done { break }
